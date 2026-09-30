@@ -1,7 +1,9 @@
 # TPIngSoftware2026
+2da entrega:
 Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrados en el problema. Prueba de Concepto: La funcionalidad debe abarcar los casos de uso relacionados con la inscripción de un postulante para autoridad de mesa, y la consulta de charlas. Incluir la interacción con el sistema externo geográfico para las referencias en mapa.
 
-Trabajo Práctico
+#Trabajo Práctico
+
 I. Portal para Autoridades de Mesa
 Antes de cada elección de representantes, el ente nacional con competencia electoral abre la convocatoria para autoridades de mesa. Se desea desarrollar un
 sistema web que permita implementar un registro de postulantes para ser autoridad de mesa.
