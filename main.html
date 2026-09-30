@@ -4,190 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Autoridades de Mesa</title>
-    <style>
-        :root {
-            --primary: #1a3e6e;
-            --primary-light: #2a5ca8;
-            --accent: #f5a623;
-            --bg: #f4f7fb;
-            --text: #2d3142;
-            --white: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-        }
-
-        /* ===== Header / Navbar ===== */
-        header {
-            background-color: var(--primary);
-            color: var(--white);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .navbar {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-        }
-
-        .navbar .logo {
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-
-        .navbar nav a {
-            color: var(--white);
-            text-decoration: none;
-            margin-left: 1.5rem;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-        }
-
-        .navbar nav a:hover {
-            color: var(--accent);
-        }
-
-        /* ===== Hero ===== */
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: var(--white);
-            text-align: center;
-            padding: 5rem 1.5rem;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.15rem;
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            opacity: 0.95;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-        }
-
-        .btn-accent {
-            background-color: var(--accent);
-            color: var(--text);
-        }
-
-        .btn-outline {
-            border: 2px solid var(--white);
-            color: var(--white);
-            margin-left: 1rem;
-        }
-
-        /* ===== Sections ===== */
-        section {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 4rem 1.5rem;
-        }
-
-        section h2 {
-            text-align: center;
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        section .subtitle {
-            text-align: center;
-            color: #6c757d;
-            margin-bottom: 2.5rem;
-        }
-
-        /* ===== Cards ===== */
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-        }
-
-        .card h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .card .meta {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-
-        .card .badge {
-            display: inline-block;
-            background-color: #e8f0fe;
-            color: var(--primary-light);
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            margin-top: 0.75rem;
-        }
-
-        /* ===== Mapa ===== */
-        #mapa {
-            height: 400px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            width: 100%;
-        }
-
-        /* ===== Footer ===== */
-        footer {
-            background-color: var(--primary);
-            color: var(--white);
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.9rem;
-            margin-top: 2rem;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
     <!-- Leaflet (mapa) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -209,7 +26,7 @@
 
     <!-- ===== Hero ===== -->
     <div class="hero" id="inicio">
-        <h1>Convocatoria Autoridades de Mesa 2026</h1>
+        <h1>Convocatoria Autoridades de Mesa Elecciones 2027</h1>
         <p>Súmate como postulante a autoridad de mesa en las elecciones de representantes.
            Registrá tu interés, informate en nuestras charlas de orientación y participá del proceso electoral.</p>
         <a href="#inscripcion" class="btn btn-accent">Inscribite ahora</a>
@@ -249,76 +66,76 @@
     <section id="inscripcion">
         <h2>Inscripción de postulantes</h2>
         <p class="subtitle">El registro estará abierto hasta el 7 de noviembre de 2026.</p>
-        <form style="max-width: 600px; margin: 0 auto; background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" action="#" method="post">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <form id="form-inscripcion" class="form-panel" action="#" method="post">
+            <div class="form-grid">
                 <label>
                     Nombre y apellido*
-                    <input type="text" name="nombre" required style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <input type="text" name="nombre" required>
                 </label>
                 <label>
                     DNI*
-                    <input type="text" name="dni" required style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <input type="text" name="dni" required>
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     Fecha de nacimiento*
-                    <input type="date" name="fecha_nacimiento" required style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <input type="date" name="fecha_nacimiento" required>
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     Dirección actual*
-                    <input type="text" name="direccion" required style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <input type="text" name="direccion" required>
                 </label>
                 <label>
                     Teléfono*
-                    <input type="tel" name="telefono" required style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <input type="tel" name="telefono" required>
                 </label>
                 <label>
                     Correo de contacto*
-                    <input type="email" name="email" required style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <input type="email" name="email" required>
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     Distrito electoral*
-                    <select name="distrito" required style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <select name="distrito" required>
                         <option value="">Seleccioná un distrito…</option>
                         <option value="d1">Distrito 1</option>
                         <option value="d2">Distrito 2</option>
                         <option value="d3">Distrito 3</option>
                     </select>
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     ¿Fue autoridad de mesa previamente?
-                    <select name="experiencia" style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <select name="experiencia">
                         <option value="si">Sí</option>
                         <option value="no">No</option>
                     </select>
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     ¿Cumplió la capacitación?
-                    <select name="capacitacion" style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <select name="capacitacion">
                         <option value="si">Sí</option>
                         <option value="no">No</option>
                     </select>
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     ¿Es afiliado a alguna agrupación?
-                    <select name="afiliado" style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <select name="afiliado">
                         <option value="no">No</option>
                         <option value="si">Sí</option>
                     </select>
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     Partido (si aplica)
-                    <input type="text" name="partido" style="width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 6px;">
+                    <input type="text" name="partido">
                 </label>
-                <label style="grid-column: 1 / -1;">
+                <label class="full">
                     Charlas de interés
-                    <div style="margin-top: 0.3rem; display: flex; gap: 1rem;">
-                        <label style="display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="charla_1"> ¿Qué es ser autoridad de mesa?</label>
-                        <label style="display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="charla_2"> El día de la elección</label>
-                        <label style="display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="charla_3"> Cierre de convocatoria</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="charla_1"> ¿Qué es ser autoridad de mesa?</label>
+                        <label><input type="checkbox" name="charla_2"> El día de la elección</label>
+                        <label><input type="checkbox" name="charla_3"> Cierre de convocatoria</label>
                     </div>
                 </label>
             </div>
-            <button type="submit" class="btn btn-accent" style="margin-top: 1.5rem; width: 100%;">Enviar inscripción</button>
+            <button type="submit" class="btn btn-accent form-submit">Enviar inscripción</button>
         </form>
     </section>
 
@@ -332,27 +149,9 @@
     <!-- ===== Footer ===== -->
     <footer>
         <p>Portal de Autoridades de Mesa — Ente Nacional con Competencia Electoral · 2026</p>
-        <p>contacto@autoridadesdemasa.gov · +54 11 5555-0100</p>
+        <p>contacto@autoridadesdemesa.gov · +54 11 5555-0100</p>
     </footer>
 
-    <script>
-        // Mapa con las sedes (Leaflet + OpenStreetMap)
-        const mapa = L.map('mapa').setView([-34.6037, -58.3816], 12);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(mapa);
-
-        const sedes = [
-            { nombre: 'Centro Cultural', direccion: 'Av. Siempreviva 742', coords: [-34.5986, -58.4067] },
-            { nombre: 'Club Atlético', direccion: 'Calle Falsa 123', coords: [-34.6118, -58.3692] },
-            { nombre: 'Palacio Electoral', direccion: 'Plaza Mayor 1', coords: [-34.6070, -58.4110] }
-        ];
-
-        sedes.forEach(sede => {
-            L.marker(sede.coords).addTo(mapa)
-                .bindPopup(`<strong>${sede.nombre}</strong><br>${sede.direccion}`);
-        });
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
