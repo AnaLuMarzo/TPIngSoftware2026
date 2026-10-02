@@ -219,6 +219,54 @@ section .subtitle {
     width: 100%;
 }
 
+/* ===== Buscador de sedes ===== */
+.buscador-sede {
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.buscador-sede label {
+    display: block;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.buscador-sede__row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.buscador-sede__row input[type="search"] {
+    flex: 1;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.buscador-sede__row input[type="search"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(42, 92, 168, 0.15);
+}
+
+.buscador-sede__row .btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+}
+
+#info-buscar-sede {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+    min-height: 1.2rem;
+}
+
 /* ===== Mapa ===== */
 #mapa {
     height: 400px;

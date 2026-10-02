@@ -144,23 +144,18 @@
         <h2>Sedes de las charlas</h2>
         <p class="subtitle">
             Ubicación de los lugares donde se realizarán las charlas.
-            Cada dirección del archivo <code>data/sedes.json</code> se consume dinámicamente
-            contra la API de normalización de direcciones (<a href="http://servicios.usig.buenosaires.gob.ar/normalizar/"
-            target="_blank" rel="noopener">USIG</a>) para obtener sus coordenadas.
+            Puede buscar cualquier dirección para verla en el mapa.
         </p>
 
-        <div class="panel-prueba" style="max-width: 600px; margin: 0 auto 1.5rem; background: var(--white); padding: 1rem 1.25rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-            <label for="input-prueba-direccion" style="font-weight: 600;">
-                🧪 Probar con una dirección nueva (integración con la API USIG)
-            </label>
-            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                <input type="text" id="input-prueba-direccion"
-                       placeholder="Ej: avellaneda 1872, san miguel"
-                       style="flex: 1; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px;">
-                <button id="btn-probar-direccion" class="btn btn-accent"
-                        style="padding: 0.6rem 1.2rem; border-radius: 6px;">Probar</button>
+        <div class="buscador-sede" role="search">
+            <label for="input-buscar-sede">🔍 Buscar una sede por su dirección</label>
+            <div class="buscador-sede__row">
+                <input type="search" id="input-buscar-sede"
+                       placeholder="Ej: cordoba 1538, caba"
+                       autocomplete="off">
+                <button id="btn-buscar-sede" type="button" class="btn btn-accent">Buscar</button>
             </div>
-            <p id="info-probar-direccion" style="margin-top: 0.5rem; font-size: 0.9rem; color: #6c757d;"></p>
+            <p id="info-buscar-sede" aria-live="polite"></p>
         </div>
 
         <div id="mapa"></div>

@@ -50,35 +50,29 @@ async function normalizarDireccion(direccion) {
     return { lat, lng, direccionNormalizada: r.direccion };
 }
 
-let marcadorPrueba = null;
+/**
+ * Sedes ya geocodificadas y colocadas en el mapa.
+ * Cada entrada: { lat, lng, nombre, direccionNormalizada, marker }
+ * Se usa para comparar contra las búsquedas del usuario.
+ */
+const Sedes = [];
 
 /**
  * Dado un resultado de USIG y datos de la sede, se agrega un marcador al mapa.
  *
  * @param {object} result - Resultado de `normalizarDireccion()`.
- * @param {string} nombre - Nombre a mostrar (la sede, o "Prueba").
- * @param {string} direccion - Dirección original enviada a la API.
+ * @param {string} nombre - Nombre de la sede.
  * @param {string} extra - Texto opcional adicional (referencia).
- * @param {boolean} [esPrueba=false] - Si es un marcador emergente (para pruebas).
  */
-function agregarMarcador(result, nombre, direccion, extra = '', esPrueba = false) {
+function agregarMarcador(result, nombre, extra = '') {
     const html =
         `<strong>${nombre}</strong><br>` +
-        `Enviada: ${direccion}<br>` +
-        `Normalizada: ${result.direccionNormalizada}<br>` +
-        (extra ? `<em>${extra}</em><br>` : '') +
-        `<code>lat: ${result.lat} &nbsp; lng: ${result.lng}</code>`;
+        result.direccionNormalizada + '<br>' +
+        (extra ? `<em>${extra}</em>` : '');
 
-    const marker = L.marker([result.lat, result.lng])
+    return L.marker([result.lat, result.lng])
         .addTo(mapa)
         .bindPopup(html);
-
-    if (esPrueba) {
-        if (marcadorPrueba) mapa.removeLayer(marcadorPrueba);
-        marcadorPrueba = marker;
-        marker.openPopup(); // las pruebas en vivo sí abren el popup
-    }
-    return marker;
 }
 
 /**
@@ -103,7 +97,14 @@ async function cargarSedes() {
             console.warn('No se pudo geocodificar la sede:', sede);
             return;
         }
-        agregarMarcador(result, sede.nombre, sede.direccion, sede.referencia || '');
+        const marker = agregarMarcador(result, sede.nombre, sede.referencia || '');
+        Sedes.push({
+            lat: result.lat,
+            lng: result.lng,
+            nombre: sede.nombre,
+            direccionNormalizada: result.direccionNormalizada,
+            marker,
+        });
     });
 
     await Promise.all(promises);
@@ -116,39 +117,59 @@ async function cargarSedes() {
 }
 
 /**
- * Prueba en vivo: toma la dirección escrita por el usuario, la envía a USIG
- * y muestra el resultado en el mapa (permite verificar que la geocodificación
- * se resuelve dinámicamente en cada llamada).
+ * Normaliza un texto para comparar de forma insensible a mayúsculas/espacios.
  */
-async function probarDireccion(direccion) {
-    const btn = document.getElementById('btn-probar-direccion');
-    const info = document.getElementById('info-probar-direccion');
+function normalizarTexto(s) {
+    return (s || '').trim().toUpperCase();
+}
+
+/**
+ * Buscador de sedes: toma la dirección escrita por el usuario, la envía al
+ * servicio de normalización de direcciones y, si corresponde a una de las
+ * sedes registradas, resalta su marcador en el mapa.
+ * Si la dirección existe pero no es una sede, no se agrega ningún marcador
+ * ni se mueve el mapa; solo se notifica al usuario.
+ */
+async function buscarDireccion(direccion) {
+    const btn = document.getElementById('btn-buscar-sede');
+    const info = document.getElementById('info-buscar-sede');
     btn.disabled = true;
-    info.textContent = 'Consultando a USIG…';
+    info.textContent = 'Buscando la ubicación…';
 
     try {
         const result = await normalizarDireccion(direccion);
         if (!result) {
-            info.textContent = 'USIG no encontró la dirección. Revisá el formato (calle altura, partido).';
+            info.textContent = 'No encontramos esa dirección. Probá escribir, por ejemplo: "cordoba 1538, caba".';
             return;
         }
-        agregarMarcador(result, 'Prueba de dirección', direccion, '', true);
-        mapa.setView([result.lat, result.lng], 16);
-        info.textContent = `OK — ubicada en lat: ${result.lat}, lng: ${result.lng}`;
+
+        // Buscar si la dirección normalizada coincide con alguna sede registrada.
+        const sede = Sedes.find(s =>
+            normalizarTexto(s.direccionNormalizada) === normalizarTexto(result.direccionNormalizada));
+
+        if (!sede) {
+            info.textContent = 'No es una Sede.';
+            return;
+        }
+
+        // Resaltar el marcador de la sede encontrada (ya existe en el mapa).
+        mapa.setView([sede.lat, sede.lng], 15);
+        sede.marker.openPopup();
+        info.textContent = `Sede encontrada: ${sede.nombre}`;
     } finally {
         btn.disabled = false;
     }
 }
 
-function initPruebaDireccion() {
-    const input = document.getElementById('input-prueba-direccion');
-    const btn = document.getElementById('btn-probar-direccion');
+function initBuscador() {
+    const input = document.getElementById('input-buscar-sede');
+    const btn = document.getElementById('btn-buscar-sede');
     if (!input || !btn) return;
 
     const submit = (e) => {
         if (e) e.preventDefault();
         const direccion = input.value.trim();
-        if (direccion) probarDireccion(direccion);
+        if (direccion) buscarDireccion(direccion);
     };
 
     btn.addEventListener('click', submit);
@@ -156,7 +177,7 @@ function initPruebaDireccion() {
 }
 
 cargarSedes();
-initPruebaDireccion();
+initBuscador();
 
 // ===== Formulario de inscripción =====
 const form = document.getElementById('form-inscripcion');
