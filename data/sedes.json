@@ -1,0 +1,92 @@
+[
+    {
+        "id": 1,
+        "nombre": "Biblioteca Nacional Mariano Moreno",
+        "direccion": "Agüero 2502, caba",
+        "referencia": "Salón de actos, planta baja"
+    },
+    {
+        "id": 2,
+        "nombre": "Teatro Colón",
+        "direccion": "Córdoba 1538, caba",
+        "referencia": "Aula de la sala de ensayo"
+    },
+    {
+        "id": 3,
+        "nombre": "Sociedad Científica Argentina",
+        "direccion": "Viamonte 1397, caba",
+        "referencia": "Salón de conferencias"
+    },
+    {
+        "id": 4,
+        "nombre": "Universidad de Buenos Aires - Rectorado",
+        "direccion": "Av. Pte. Figueroa Alcorta 2263, caba",
+        "referencia": "Salón de actos, planta baja"
+    },
+    {
+        "id": 5,
+        "nombre": "Museo de La Ciudad (Palacio de las Leyes)",
+        "direccion": "Bolívar 63, caba",
+        "referencia": "Aula didáctica, 1° piso"
+    },
+    {
+        "id": 6,
+        "nombre": "Colegio Nacional Buenos Aires",
+        "direccion": "Av. Callao 585, caba",
+        "referencia": "Gimnasio y salón de actos"
+    },
+    {
+        "id": 7,
+        "nombre": "Sociedad Española de Beneficencia",
+        "direccion": "Mitre 862, caba",
+        "referencia": "Aula 3, primer piso"
+    },
+    {
+        "id": 8,
+        "nombre": "Sociedad Argentina de Escritores (SADE)",
+        "direccion": "Mitre 2550, caba",
+        "referencia": "Salón de reuniones, 2° piso"
+    },
+    {
+        "id": 9,
+        "nombre": "Centro de Formación Profesional Nº 7",
+        "direccion": "Sarmiento 1005, caba",
+        "referencia": "Aula magna, planta alta"
+    },
+    {
+        "id": 10,
+        "nombre": "Sociedad de Estudios y Defensa de la Infancia (SEDI)",
+        "direccion": "San Juan Bautista de la Salle 2290, caba",
+        "referencia": "Aula de formación, primer piso"
+    },
+    {
+        "id": 11,
+        "nombre": "Centro Cultural La Vuelta",
+        "direccion": "Humboldt 2240, caba",
+        "referencia": "Aula 4, segundo piso"
+    },
+    {
+        "id": 12,
+        "nombre": "Centro de Convenciones de la Ciudad (Pabellón 1)",
+        "direccion": "Av. Corrientes 2500, caba",
+        "referencia": "Sala Magna, planta baja"
+    },
+    {
+        "id": 13,
+        "nombre": "Escuela de Artes y Oficios Nº 7 (Sarmiento)",
+        "direccion": "Av. Belgrano 1100, caba",
+        "referencia": "Atelier principal, planta alta"
+    },
+    {
+        "id": 14,
+        "nombre": "Centro de Formación del Profesorado Nº 4",
+        "direccion": "Lope de Vega 1450, caba",
+        "referencia": "Aula de formación, primer piso"
+    },
+    {
+        "id": 15,
+        "nombre": "Sede Vecinal del Barrio Saavedra (Pabellón de Eventos)",
+        "direccion": "Av. del Libertador 1450, caba",
+        "referencia": "Salón central, entrada por Av. del Libertador"
+    }
+]

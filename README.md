@@ -20,7 +20,31 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 | Leaflet | 1.9.4 | CDN (unpkg.com) | Visualización del mapa interactivo de sedes |
 | OpenStreetMap Tiles | — | CDN (tile.openstreetmap.org) | Imágenes de fondo (tiles) del mapa |
 
-> Las librerías se cargan desde un CDN, por lo que **se requiere conexión a internet** para que el mapa funcione correctamente.
+### Servicios externos (API)
+
+| Servicio | URL | Uso |
+|----------|-----|-----|
+| USIG – Normalizador de Direcciones (Gobierno de CABA) | http://servicios.usig.buenosaires.gob.ar/normalizar/ | Normaliza y geocodifica las direcciones de las sedes cargadas en `data/sedes.json` para obtener sus coordenadas geográficas |
+
+> El proyecto **requiere conexión a internet** para:
+> - Cargar Leaflet y los tiles de OpenStreetMap desde CDN.
+> - Consumir la API de normalización de direcciones de USIG para geocodificar cada sede.
+
+#### Integración con la API USIG
+
+Según las pautas de la entrega, el sistema **no** trae coordenadas precalculadas: cada vez que
+se muestra una sede, se envía su dirección a USIG (`?direccion=...&geocodificar=TRUE`) y se
+utiliza la respuesta para posicionar el marcador con Leaflet.
+
+- **Estructura del consumo**: `data/sedes.json` contiene `{ id, nombre, direccion, referencia }`
+  donde `direccion` está en el formato que espera USIG (`"calle altura, partido"`).
+- **Runtime** (`js/main.js`): `cargarSedes()` itera sobre el JSON y para cada sede llama a la
+  función `normalizarDireccion()`, que consume la API de USIG y extrae
+  `result.direccionesNormalizadas[0].coordenadas` (lat/lng) para agregar un marcador
+  con `L.marker([lat, lng])`.
+- **Prueba en vivo**: la sección `Sedes` del `main.html` incluye un input para ingresar una
+  dirección nueva, enviarla a USIG y ver el resultado en el mapa. Esto permite verificar que
+  la geocodificación se resuelve dinámicamente en cada llamada (criterio de evaluación).
 
 ### Herramientas recomendadas
 
