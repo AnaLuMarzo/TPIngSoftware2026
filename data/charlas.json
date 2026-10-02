@@ -1,0 +1,152 @@
+[
+  {
+    "idCharla": 1,
+    "Nombre": "Introducción a la Democracia Participativa",
+    "Tema": "Ciudadanía y participación",
+    "Aula": "Salón de actos",
+    "Fecha": "2026-10-15",
+    "Horario": "18:00",
+    "Profesor": "María Elena Ruiz",
+    "Sede": "Biblioteca Nacional Mariano Moreno"
+  },
+  {
+    "idCharla": 2,
+    "Nombre": "Régimen Electoral y Procedimientos",
+    "Tema": "Sistema electoral",
+    "Aula": "Aula 1",
+    "Fecha": "2026-10-16",
+    "Horario": "17:30",
+    "Profesor": "Diego Soria",
+    "Sede": "Teatro Colón"
+  },
+  {
+    "idCharla": 3,
+    "Nombre": "Comunicación y Liderazgo en el Día de la Elección",
+    "Tema": "Gestión de mesas y liderazgo",
+    "Aula": "Sala de conferencias",
+    "Fecha": "2026-10-18",
+    "Horario": "19:00",
+    "Profesor": "Laura Fernández",
+    "Sede": "Sociedad Científica Argentina"
+  },
+  {
+    "idCharla": 4,
+    "Nombre": "Normativa Electoral y Conflictos de Competencia",
+    "Tema": "Marco normativo",
+    "Aula": "Salón principal",
+    "Fecha": "2026-10-20",
+    "Horario": "16:30",
+    "Profesor": "Carlos Menéndez",
+    "Sede": "Universidad de Buenos Aires - Rectorado"
+  },
+  {
+    "idCharla": 5,
+    "Nombre": "Tecnología y Seguridad en el Escrutinio",
+    "Tema": "Seguridad y control electoral",
+    "Aula": "Aula didáctica",
+    "Fecha": "2026-10-22",
+    "Horario": "18:30",
+    "Profesor": "Sofía Alvarez",
+    "Sede": "Museo de La Ciudad (Palacio de las Leyes)"
+  },
+  {
+    "idCharla": 6,
+    "Nombre": "Atención Ciudadana y Trámites Electorales",
+    "Tema": "Atención al público",
+    "Aula": "Gimnasio",
+    "Fecha": "2026-10-24",
+    "Horario": "17:00",
+    "Profesor": "Matías Romero",
+    "Sede": "Colegio Nacional Buenos Aires"
+  },
+  {
+    "idCharla": 7,
+    "Nombre": "Voluntariado y Participación Comunitaria",
+    "Tema": "Acción comunitaria",
+    "Aula": "Aula 3",
+    "Fecha": "2026-10-26",
+    "Horario": "15:30",
+    "Profesor": "Paula García",
+    "Sede": "Sociedad Española de Beneficencia"
+  },
+  {
+    "idCharla": 8,
+    "Nombre": "Mediación y Resolución de Diferencias",
+    "Tema": "Mediación y conflicto",
+    "Aula": "Salón de reuniones",
+    "Fecha": "2026-10-28",
+    "Horario": "18:00",
+    "Profesor": "Nicolás Benítez",
+    "Sede": "Sociedad Argentina de Escritores (SADE)"
+  },
+  {
+    "idCharla": 9,
+    "Nombre": "Preparación Operativa para Mesas Electorales",
+    "Tema": "Operativa electoral",
+    "Aula": "Aula magna",
+    "Fecha": "2026-10-29",
+    "Horario": "17:15",
+    "Profesor": "Agustín Ponce",
+    "Sede": "Centro de Formación Profesional Nº 7"
+  },
+  {
+    "idCharla": 10,
+    "Nombre": "Derechos de Participación y Protección de Votos",
+    "Tema": "Derechos electorales",
+    "Aula": "Aula de formación",
+    "Fecha": "2026-10-30",
+    "Horario": "19:15",
+    "Profesor": "Valeria Costas",
+    "Sede": "Sociedad de Estudios y Defensa de la Infancia (SEDI)"
+  },
+  {
+    "idCharla": 11,
+    "Nombre": "Gestionando un Equipo Electoral",
+    "Tema": "Trabajo en equipo",
+    "Aula": "Aula 4",
+    "Fecha": "2026-11-01",
+    "Horario": "18:00",
+    "Profesor": "Federico Vega",
+    "Sede": "Centro Cultural La Vuelta"
+  },
+  {
+    "idCharla": 12,
+    "Nombre": "Elecciones y Transparencia Pública",
+    "Tema": "Transparencia y control",
+    "Aula": "Sala Magna",
+    "Fecha": "2026-11-03",
+    "Horario": "17:45",
+    "Profesor": "Carla Mendez",
+    "Sede": "Centro de Convenciones de la Ciudad (Pabellón 1)"
+  },
+  {
+    "idCharla": 13,
+    "Nombre": "Diseño de Experiencias Cívicas",
+    "Tema": "Comunidad y educación cívica",
+    "Aula": "Atelier principal",
+    "Fecha": "2026-11-05",
+    "Horario": "16:00",
+    "Profesor": "Ramiro Silva",
+    "Sede": "Escuela de Artes y Oficios Nº 7 (Sarmiento)"
+  },
+  {
+    "idCharla": 14,
+    "Nombre": "Formación de Formadores Electorales",
+    "Tema": "Capacitación y tutoría",
+    "Aula": "Aula de formación",
+    "Fecha": "2026-11-07",
+    "Horario": "18:45",
+    "Profesor": "Eugenia Torres",
+    "Sede": "Centro de Formación del Profesorado Nº 4"
+  },
+  {
+    "idCharla": 15,
+    "Nombre": "Cierre de Convocatoria y Últimas Recomendaciones",
+    "Tema": "Cierre del proceso y recomendaciones finales",
+    "Aula": "Salón central",
+    "Fecha": "2026-11-09",
+    "Horario": "19:30",
+    "Profesor": "Andrés Loyola",
+    "Sede": "Sede Vecinal del Barrio Saavedra (Pabellón de Eventos)"
+  }
+]

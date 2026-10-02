@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Autoridades de Mesa</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=2">
     <!-- Leaflet (mapa) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -16,10 +16,10 @@
         <div class="navbar">
             <div class="logo">⚖️ Autoridades de Mesa</div>
             <nav>
-                <a href="#inicio">Inicio</a>
-                <a href="#charlas">Charlas</a>
-                <a href="#inscripcion">Inscripción</a>
-                <a href="#sedes">Sedes</a>
+                <a href="main.html#inicio">Inicio</a>
+                <a href="charlas.html">Charlas</a>
+                <a href="main.html#inscripcion">Inscripción</a>
+                <a href="main.html#sedes">Sedes</a>
             </nav>
         </div>
     </header>
@@ -30,35 +30,16 @@
         <p>Súmate como postulante a autoridad de mesa en las elecciones de representantes.
            Registrá tu interés, informate en nuestras charlas de orientación y participá del proceso electoral.</p>
         <a href="#inscripcion" class="btn btn-accent">Inscribite ahora</a>
-        <a href="#charlas" class="btn btn-outline">Ver charlas</a>
+        <a href="charlas.html" class="btn btn-outline">Ver charlas</a>
     </div>
 
     <!-- ===== Charlas ===== -->
     <section id="charlas">
         <h2>Charlas de orientación</h2>
         <p class="subtitle">Actividades abiertas a la comunidad. No es requisito asistir para inscribirse.</p>
-        <div class="cards">
-            <div class="card">
-                <h3>¿Qué es ser autoridad de mesa?</h3>
-                <p class="meta">📅 10 de octubre, 18:00 hs</p>
-                <p class="meta">📍 Centro Cultural — Av. Siempreviva 742</p>
-                <p>Introducción general a las funciones y responsabilidades de la autoridad de mesa.</p>
-              
-            </div>
-            <div class="card">
-                <h3>El día de la elección</h3>
-                <p class="meta">📅 24 de octubre, 10:00 hs</p>
-                <p class="meta">📍 Club Atlético — Calle Falsa 123</p>
-                <p>Detalle operativo del día de los comicios: instalación, escrutinio y actas.</p>
-                
-            </div>
-            <div class="card">
-                <h3>Cierre de convocatoria</h3>
-                <p class="meta">📅 7 de noviembre, 17:00 hs</p>
-                <p class="meta">📍 Palacio Electoral — Plaza Mayor 1</p>
-                <p>Charla de cierre: consultas finales antes del cierre del registro de postulantes.</p>
-                
-            </div>
+        <div class="cards" id="lista-charlas" data-limite="3" aria-live="polite"></div>
+        <div class="charlas-accion">
+            <a href="charlas.html" class="btn btn-accent">Ver más charlas</a>
         </div>
     </section>
 
@@ -167,6 +148,7 @@
         <p>contacto@autoridadesdemesa.gov · +54 11 5555-0100</p>
     </footer>
 
+    <script src="js/charlas.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

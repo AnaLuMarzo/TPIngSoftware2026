@@ -117,6 +117,13 @@ section h2 {
     margin-bottom: 0.5rem;
 }
 
+.page-title {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
 section .subtitle {
     text-align: center;
     color: #6c757d;
@@ -161,6 +168,29 @@ section .subtitle {
     font-weight: bold;
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
+    margin-top: 0.75rem;
+}
+
+.charlas-accion {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.75rem;
+}
+
+.charlas-accion .btn {
+    border-radius: 6px;
+}
+
+.btn-back {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.charla-card .meta {
+    margin-top: 0.7rem;
+}
+
+.charla-card .charla-tema {
     margin-top: 0.75rem;
 }
 
@@ -283,4 +313,22 @@ footer {
     padding: 1.5rem;
     font-size: 0.9rem;
     margin-top: 2rem;
+}
+
+@media (max-width: 640px) {
+    .navbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .navbar nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1rem;
+    }
+
+    .navbar nav a {
+        margin-left: 0;
+    }
 }
