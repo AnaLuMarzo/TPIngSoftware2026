@@ -1,5 +1,9 @@
 // ===== Constantes =====
-const URL_USIG = 'http://servicios.usig.buenosaires.gob.ar/normalizar/';
+// La API de USIG acepta HTTPS (verificado), y es la forma más compatible:
+// los routers de ISPs argentinas (Flow, Fiberhome, Telecom, etc.) suelen
+// forzar el upgrade HTTP->HTTPS ("HTTPS-Only Mode") que puede romper peticiones
+// a servidores que hablan solo HTTP. Con HTTPS directo se evita ese conflicto.
+const URL_USIG = 'https://servicios.usig.buenosaires.gob.ar/normalizar/';
 const URL_SEDES = 'data/sedes.json';
 
 // ===== Inicialización del mapa (Leaflet + OpenStreetMap) =====
