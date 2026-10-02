@@ -5,13 +5,13 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 
 ## Tecnologías y requisitos
 
-### Lenguajes de programación
+### Tecnologías del proyecto
 
 | Lenguaje | Versión requerida | Uso |
 |----------|-------------------|-----|
-| HTML5 | 5.x | Estructura de las páginas (`main.html`) |
-| CSS3 | 3.x | Estilos y maquetación (`css/styles.css`) |
-| JavaScript (ES6+) | ES2015+ | Lógica del mapa y del formulario (`js/main.js`) |
+| HTML5 | Estándar del navegador (no se instala) | Estructura de `main.html` y `charlas.html` |
+| CSS3 | Estándar del navegador (no se instala) | Estilos y maquetación (`css/styles.css`) |
+| JavaScript (ES2015+) | ES2015 o posterior | Mapa, formulario y carga de charlas (`js/main.js`, `js/charlas.js`) |
 
 ### Librerías externas
 
@@ -24,35 +24,29 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 
 | Servicio | URL | Uso |
 |----------|-----|-----|
-| USIG – Normalizador de Direcciones (Gobierno de CABA) | http://servicios.usig.buenosaires.gob.ar/normalizar/ | Normaliza y geocodifica las direcciones de las sedes cargadas en `data/sedes.json` para obtener sus coordenadas geográficas |
+| USIG – Normalizador de Direcciones (Gobierno de CABA) | https://servicios.usig.buenosaires.gob.ar/normalizar/ | Normaliza y geocodifica direcciones para ubicar las sedes en el mapa |
 
 > El proyecto **requiere conexión a internet** para:
 > - Cargar Leaflet y los tiles de OpenStreetMap desde CDN.
 > - Consumir la API de normalización de direcciones de USIG para geocodificar cada sede.
 
-#### Integración con la API USIG
+#### Datos, charlas y mapa
 
-Según las pautas de la entrega, el sistema **no** trae coordenadas precalculadas: cada vez que
-se muestra una sede, se envía su dirección a USIG (`?direccion=...&geocodificar=TRUE`) y se
-utiliza la respuesta para posicionar el marcador con Leaflet.
-
-- **Estructura del consumo**: `data/sedes.json` contiene `{ id, nombre, direccion, referencia }`
-  donde `direccion` está en el formato que espera USIG (`"calle altura, partido"`).
-- **Runtime** (`js/main.js`): `cargarSedes()` itera sobre el JSON y para cada sede llama a la
-  función `normalizarDireccion()`, que consume la API de USIG y extrae
-  `result.direccionesNormalizadas[0].coordenadas` (lat/lng) para agregar un marcador
-  con `L.marker([lat, lng])`.
-- **Prueba en vivo**: la sección `Sedes` del `main.html` incluye un input para ingresar una
-  dirección nueva, enviarla a USIG y ver el resultado en el mapa. Esto permite verificar que
-  la geocodificación se resuelve dinámicamente en cada llamada (criterio de evaluación).
+- `data/charlas.json` contiene las charlas precargadas; cada charla identifica su sede por nombre.
+- `data/sedes.json` contiene nombres y direcciones, sin coordenadas.
+- Al cargar el mapa, la aplicación envía cada dirección a USIG y utiliza la respuesta para
+  colocar los marcadores con Leaflet.
+- El buscador del mapa comprueba si una dirección corresponde a una sede registrada. Si lo es,
+  centra el mapa en esa sede; si no, informa **"No es una Sede"** y no agrega un marcador.
+- La portada muestra tres charlas y el enlace **"Ver más charlas"** abre `charlas.html`, donde
+  se muestra el listado completo. Ambas vistas obtienen la información desde los archivos JSON.
 
 ### Herramientas recomendadas
 
 | Herramienta | Versión requerida | Uso |
 |-------------|-------------------|-----|
 | Navegador web moderno | Última versión (Chrome, Firefox, Edge, Safari) | Ejecutar y visualizar la aplicación |
-| Python | 3.x (opcional) | Levantar un servidor local (`python -m http.server`) |
-| Node.js / npm | 14+ (opcional) | Alternativa para servidor local (`npx serve`) |
+| Python | 3.x | Levantar el servidor local para que el navegador lea los archivos JSON |
 
 ### Cómo ejecutar el proyecto
 
@@ -64,19 +58,14 @@ El código se entrega en un archivo `.zip`. Seguir estos pasos:
    ```bash
    cd TPIngSoftware2026
    ```
-4. Opción **A** — abrir `main.html` directamente en el navegador (doble click).
-5. Opción **B** — levantar un servidor local:
+4. Abrir una terminal en la carpeta del proyecto e iniciar el servidor local:
    ```bash
-   # Con Python 3.x
    python -m http.server 8080
    ```
-   ```bash
-   # o con Node.js >= 14
-   npx serve
-   ```
-6. Abrir en el navegador la URL indicada en la terminal (ej. `http://localhost:8080`).
+5. Abrir `http://localhost:8080/main.html` en el navegador. No abrir el archivo con doble clic,
+  porque el navegador podría bloquear la lectura de los JSON.
 
-> Nota: no hay dependencias que instalar localmente (`package.json`) en este momento, ya que la única librería (Leaflet) se carga por CDN. Si se incorpora un backend, se actualizará esta sección con los requisitos correspondientes.
+> No se necesita instalar paquetes con npm. Leaflet se carga desde CDN; se requiere internet para Leaflet, OpenStreetMap y USIG.
 
 ---
 

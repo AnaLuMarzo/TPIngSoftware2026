@@ -1,27 +1,36 @@
-# Informe técnico — Integración de API de Normalización de Direcciones y Visualización en Mapa
+# Informe técnico 
 
-## 1. Objetivo
+## 1. Resumen
 
-Describir de manera concreta cómo el **Portal de Autoridades de Mesa** integra el sistema externo
-geográfico mediante la API de normalización de direcciones del **USIG** (Gobierno de la Ciudad de
-Buenos Aires) y la librería **Leaflet**, cumpliendo con los criterios de evaluación de la
-Prueba de Concepto.
+El prototipo permite consultar charlas de orientación e inscribirse como postulante a autoridad
+de mesa. La página principal presenta tres charlas; el botón **"Ver más charlas"** abre otra
+página con las 15 actividades y sus datos: tema, fecha, horario, profesor, aula y sede.
+
+Las charlas y las sedes están guardadas en archivos de datos del proyecto. Para mostrar las
+sedes en el mapa, el sistema envía cada dirección al servicio USIG y utiliza la ubicación que
+recibe como respuesta. No se guardan coordenadas anticipadamente. El buscador localiza las sedes
+registradas; si una dirección no es sede, avisa **"No es una Sede"** y no agrega un punto al mapa.
+
+Para ejecutar el prototipo se necesita un navegador actualizado, Python 3 e internet. Hay que
+descomprimir el proyecto, iniciar el servidor local y abrir la página principal en el navegador.
+No hace falta instalar paquetes de programación.
 
 ## 2. Alcance de la implementación
 
 - **Visualización de sedes**: el sistema muestra en un mapa interactivo las 15 sedes donde se
   realizarán las charlas de orientación.
-- **Consumo dinámico de la API USIG**: cada dirección de una sede se envía en tiempo real a la
-  API de normalización de direcciones. Las coordenadas resultantes **no** están precalculadas ni
-  hardcodeadas.
-- **Prueba en vivo**: se incluye un formulario en la página que permite introducir una dirección
-  diferente a las precargadas y verificar que el sistema la geocodifica dinámicamente.
+- **Ubicación de sedes**: cada dirección se envía al servicio USIG cuando se carga el mapa. La
+  aplicación obtiene la ubicación en ese momento; no la trae guardada de antemano.
+- **Búsqueda de sedes**: se puede buscar una dirección; la aplicación consulta USIG y verifica
+  si corresponde a una sede registrada. Solo las sedes existentes se pueden localizar en el mapa.
+- **Consulta de charlas**: la portada presenta tres actividades y `charlas.html` muestra el
+  listado completo de 15 charlas.
 
 ## 3. Servicios externos utilizados
 
 | Servicio | URL | Versión / CDN | Rol |
 |----------|-----|---------------|-----|
-| USIG – Normalizador de Direcciones | http://servicios.usig.buenosaires.gob.ar/normalizar/ | v2.1.2 | Geocodificación de direcciones (CABA / AMBA) |
+| USIG – Normalizador de Direcciones | https://servicios.usig.buenosaires.gob.ar/normalizar/ | v2.1.2 | Normalización y geocodificación de direcciones (CABA / AMBA) |
 | Leaflet | https://unpkg.com/leaflet@1.9.4/ | 1.9.4 (CDN: unpkg.com) | Visualización del mapa interactivo |
 | OpenStreetMap Tiles | https://tile.openstreetmap.org/ | — | Imágenes de fondo (tiles) del mapa |
 
@@ -63,7 +72,7 @@ USIG.
 ### 5.1. Punto de entrada
 
 ```
-GET http://servicios.usig.buenosaires.gob.ar/normalizar/
+GET https://servicios.usig.buenosaires.gob.ar/normalizar/
 ```
 
 **Parámetros enviados:**
@@ -73,8 +82,8 @@ GET http://servicios.usig.buenosaires.gob.ar/normalizar/
 | `direccion` | Ej.: `cordoba 1538, caba` | Dirección en formato "calle altura, partido" o "calle y calle, partido" |
 | `geocodificar` | `TRUE` | Solicita las coordenadas geográficas en la respuesta |
 
-**Nota:** La llamada se realiza desde el navegador web (cliente) mediante `fetch`, con conexión
-de red directa a la API del gobierno. No hay middlewares ni proxies internos.
+La llamada se realiza desde el navegador. La dirección viaja al servicio USIG y la aplicación
+lee la ubicación incluida en su respuesta.
 
 ### 5.2. Estructura de la respuesta (JSON)
 
@@ -107,10 +116,10 @@ Campos clave utilizados por el sistema:
 
 ### 5.3. Manejo de errores
 
-- **Sin resultados** (`direccionesNormalizadas: []`): se registra un warning en consola y la sede
-  no se muestra en el mapa.
-- **Error de conexión / CORS / red**: se captura la excepción y se notifica al usuario en la
-  interfaz.
+- **Dirección no reconocida**: USIG no devuelve resultados y la página informa que no encontró
+  esa dirección.
+- **Falla de conexión**: el servicio requiere acceso a internet. Si la red bloquea USIG, la
+  búsqueda o la carga del mapa puede no completarse.
 
 ## 6. Visualización en el mapa (Leaflet)
 
@@ -146,7 +155,7 @@ cargarSedes()
   │       │
   │       └── return { lat, lng, direccionNormalizada }
   │
-  └── agregarMarcador(result, sede.nombre, sede.direccion, sede.referencia)
+  └── agregarMarcador(result, sede.nombre, sede.referencia)
         │
         └── L.marker([lat, lng]).addTo(mapa).bindPopup(HTML)
 ```
@@ -156,64 +165,42 @@ encuadrar el mapa en la totalidad de las sedes.
 
 ### 6.3. Contenido del popup de cada sede
 
-```
-<strong>{nombre}</strong>
-Enviada:    {direccion original}
-Normalizada: {direccion normalizada por USIG}
-{referencia}
-lat: ... lng: ...
-```
+El popup muestra el nombre de la sede, la dirección normalizada y una referencia del lugar.
+No expone coordenadas técnicas al usuario.
 
-## 7. Prueba en vivo (requisito del PDF)
+## 7. Búsqueda de sedes
 
-En la sección **Sedes** de `main.html` se implementó un formulario:
+En la sección **Sedes** de `main.html` hay un buscador para encontrar una sede por su dirección.
+La dirección se envía a USIG y la respuesta normalizada se compara con las sedes cargadas desde
+`data/sedes.json`.
 
-```
-🧪 Probar con una dirección nueva (integración con la API USIG)
-[  ____________________________  ] [ Probar ]
-```
+- Si corresponde a una sede registrada, se centra el mapa y se abre el marcador existente.
+- Si la dirección existe, pero no es una de las sedes, se informa **"No es una Sede"**. No se
+  agrega un marcador nuevo ni se desplaza el mapa.
+- Si USIG no reconoce la dirección, se informa que no se encontró.
 
-### Flujo
-
-1. El usuario escribe una dirección (ej.: `Alsina 1386, caba`).
-2. Al presionar "Probar" (o Enter), se invoca `probarDireccion(direccion)`.
-3. Se realiza **una nueva llamada real a USIG** con esa dirección.
-4. Si USIG devuelve coordenadas validas:
-   - Se crea un **marcador nuevo** (reemplazando al anterior) en el punto geográfico.
-   - El mapa centra ese punto (`mapa.setView([lat, lng], 16)`).
-   - Abre el **popup** mostrando la dirección enviada, la normalizada, y las coordenadas.
-   - En la UI se confirma: `OK — ubicada en lat: ..., lng: ...`.
-5. Si USIG no encuentra la dirección, se muestra:
-   `USIG no encontró la dirección. Revisá el formato (calle altura, partido).`
-
-> **Criterio evaluado:** "Durante la demostración se podrá solicitar probar la integración con
-> una dirección diferente de las utilizadas inicialmente, para verificar que la ubicación se
-> obtiene dinámicamente mediante el consumo de la API."
->
-> **Cumplimiento:** La prueba en vivo consume la API con una dirección arbitraria, distinta a las
-> 15 precargadas, y muestra el resultado geográfico sin ningún dato precomputado.
+De este modo, la ubicación se obtiene dinámicamente mediante el servicio externo, pero el mapa
+solo presenta los lugares que fueron definidos como sedes de las charlas.
 
 ## 8. Verificación realizada
 
-Durante el desarrollo se verificó que:
-
-- Las **15 sedes** precargadas en `data/sedes.json` se geocodifican correctamente con la API
-  USIG (15/15 llamadas exitosas).
-- Cada llamada HTTP corresponde a la solicitud del JSON (una petición por cada dirección,
-  total 15 + 1 para el JSON = 16 requests al iniciar la página).
-- Se probó una dirección **nueva** (`Alsina 1386, caba`) desde el formulario de prueba: la API
-  respondió `OK — ubicada en lat: -34.611112, lng: -58.386003` y se agregó un **16° marcador**
-  al mapa.
+Durante la verificación se comprobó que la página principal muestra tres charlas y que el enlace
+"Ver más charlas" abre la página con las 15 actividades. También se probó la búsqueda: una
+dirección que coincide con una sede abre su marcador; una dirección que no es sede informa
+"No es una Sede" y no agrega marcadores.
 
 ## 9. Archivos involucrados
 
 | Archivo | Rol |
 |---------|-----|
-| `main.html` | Estructura HTML. Incluye el panel de prueba y el contenedor `#mapa`. Enlaza CSS/JS. |
-| `css/styles.css` | Estilos de toda la aplicación (no impacta la lógica de APIs). |
-| `js/main.js` | **Lógica principal**: definición de `normalizarDireccion()`, `cargarSedes()`, `agregarMarcador()`, `probarDireccion()`. Consumidor de la API USIG y de Leaflet. |
-| `data/sedes.json` | Data precargada: 15 sedes con nombre y dirección (sin coordenadas). |
-| `README.md` | Documenta tecnologías, librerías, servicio USIG y cómo ejecutar. |
+| `main.html` | Página principal con tres charlas, inscripción y mapa. |
+| `charlas.html` | Vista con las 15 charlas precargadas. |
+| `css/styles.css` | Estilos compartidos por las dos páginas. |
+| `js/main.js` | Mapa, consulta a USIG, búsqueda de sedes y formulario. |
+| `js/charlas.js` | Carga los datos de charlas y sedes y construye las tarjetas. |
+| `data/charlas.json` | Datos de las 15 charlas. |
+| `data/sedes.json` | Nombres y direcciones de las 15 sedes; no contiene coordenadas. |
+| `README.md` | Tecnologías necesarias e instrucciones para ejecutar. |
 
 ## 10. Requisitos de ejecución
 
@@ -221,10 +208,10 @@ Durante el desarrollo se verificó que:
 - **Conexión a internet** requerida para:
   - Cargar Leaflet y los tiles de OpenStreetMap.
   - Consumir la API USIG (una llamada por cada sede).
-- Servidor local recomendado (el `fetch` a `data/sedes.json` no funciona con `file://`):
+- Servidor local necesario para cargar los archivos JSON (abrir el HTML mediante doble clic
+  puede ser bloqueado por el navegador):
   ```bash
   python -m http.server 8080
-  # o: npx serve
   ```
 
 ## 11. Posibles mejoras (no requeridas por las pautas)
