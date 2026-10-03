@@ -1,0 +1,76 @@
+<section id="inscripcion">
+    <h2>Inscripción de postulantes</h2>
+    <p id="fecha-cierre-inscripcion" class="subtitle">Verificando fecha y horario de cierre...</p>
+    <form id="form-inscripcion" class="form-panel" action="#" method="post" novalidate>
+        <div class="form-grid">
+            <label>
+                Nombre y apellido*
+                <input type="text" name="nombre" required>
+            </label>
+            <label>
+                DNI*
+                <input type="text" name="dni" required>
+            </label>
+            <label class="full">
+                Fecha de nacimiento*
+                <input type="date" name="fecha_nacimiento" max="2010-12-31" required>
+            </label>
+            <label class="full">
+                Dirección actual*
+                <input type="text" name="direccion" required>
+            </label>
+            <label>
+                Teléfono*
+                <input type="tel" name="telefono" required>
+            </label>
+            <label>
+                Correo de contacto*
+                <input type="email" name="email" required>
+            </label>
+            <label class="full">
+                Distrito electoral*
+                <select name="distrito" required>
+                    <option value="">Seleccioná un distrito…</option>
+                    <option value="d1">Distrito 1</option>
+                    <option value="d2">Distrito 2</option>
+                    <option value="d3">Distrito 3</option>
+                </select>
+            </label>
+            <label class="full">
+                ¿Fue autoridad de mesa previamente?
+                <select name="experiencia">
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                </select>
+            </label>
+            <label class="full">
+                ¿Cumplió la capacitación?
+                <select name="capacitacion">
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                </select>
+            </label>
+            <label class="full">
+                ¿Es afiliado a alguna agrupación?
+                <select name="afiliado">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                </select>
+            </label>
+            <label class="full">
+                Partido (si aplica)
+                <input type="text" name="partido">
+            </label>
+            <label class="full">
+                Charlas de interés
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="charla_1"> ¿Qué es ser autoridad de mesa?</label>
+                    <label><input type="checkbox" name="charla_2"> El día de la elección</label>
+                    <label><input type="checkbox" name="charla_3"> Cierre de convocatoria</label>
+                </div>
+            </label>
+        </div>
+        <button type="submit" class="btn btn-accent form-submit">Enviar inscripción</button>
+        <p id="estado-inscripcion" class="form-status" role="status" aria-live="polite"></p>
+    </form>
+</section>
