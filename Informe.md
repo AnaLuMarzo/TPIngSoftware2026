@@ -11,9 +11,9 @@ sedes en el mapa, el sistema envía cada dirección al servicio USIG y utiliza l
 recibe como respuesta. No se guardan coordenadas anticipadamente. El buscador localiza las sedes
 registradas; si una dirección no es sede, avisa **"No es una Sede"** y no agrega un punto al mapa.
 
-Para ejecutar el prototipo se necesita un navegador actualizado, Python 3 e internet. Hay que
-descomprimir el proyecto, iniciar el servidor local y abrir la página principal en el navegador.
-No hace falta instalar paquetes de programación.
+Para abrir el prototipo se necesita un navegador actualizado, conexión a internet y un servidor
+local. Python es opcional: también se puede usar VS Code Live Server o Node.js. El archivo
+`README.md` explica cómo iniciar el sitio con cada opción.
 
 ## 2. Alcance de la implementación
 
@@ -170,9 +170,9 @@ No expone coordenadas técnicas al usuario.
 
 ## 7. Búsqueda de sedes
 
-En la sección **Sedes** de `main.html` hay un buscador para encontrar una sede por su dirección.
-La dirección se envía a USIG y la respuesta normalizada se compara con las sedes cargadas desde
-`data/sedes.json`.
+`main.html` carga la sección de sedes definida en `mapa.html`. Su buscador permite encontrar una
+sede por dirección. `js/mapa.js` envía esa dirección a USIG y compara la respuesta con las sedes
+cargadas desde `data/sedes.json`.
 
 - Si corresponde a una sede registrada, se centra el mapa y se abre el marcador existente.
 - Si la dirección existe, pero no es una de las sedes, se informa **"No es una Sede"**. No se
@@ -193,26 +193,27 @@ dirección que coincide con una sede abre su marcador; una dirección que no es 
 
 | Archivo | Rol |
 |---------|-----|
-| `main.html` | Página principal con tres charlas, inscripción y mapa. |
-| `charlas.html` | Vista con las 15 charlas precargadas. |
-| `css/styles.css` | Estilos compartidos por las dos páginas. |
-| `js/main.js` | Mapa, consulta a USIG, búsqueda de sedes y formulario. |
-| `js/charlas.js` | Carga los datos de charlas y sedes y construye las tarjetas. |
-| `data/charlas.json` | Datos de las 15 charlas. |
-| `data/sedes.json` | Nombres y direcciones de las 15 sedes; no contiene coordenadas. |
-| `README.md` | Tecnologías necesarias e instrucciones para ejecutar. |
+| `main.html` | Página de inicio. Muestra la presentación y las primeras tres charlas; también contiene los espacios donde se cargan el formulario y el mapa. |
+| `charlas.html` | Página con el listado completo de charlas y un enlace para ver cada sede en el mapa. |
+| `formulario.html` | Contenido visual del formulario de inscripción. |
+| `mapa.html` | Contenido visual de la sección del mapa y su buscador. |
+| `js/main.js` | Carga el formulario y el mapa dentro de la página de inicio. |
+| `js/charlas.js` | Lee los archivos de datos y arma las tarjetas con la información de cada charla. |
+| `js/formulario.js` | Muestra la fecha de cierre y procesa el envío del formulario. |
+| `js/mapa.js` | Muestra las sedes en el mapa y permite buscarlas por dirección. |
+| `js/validaciones.js` | Reúne las reglas para revisar los datos de sedes y los campos del formulario. |
+| `css/styles.css` | Define los colores, tamaños y distribución visual de las páginas. |
+| `data/charlas.json` | Guarda los datos de las charlas. |
+| `data/sedes.json` | Guarda los nombres, direcciones y referencias de las sedes. |
+| `README.md` | Explica los requisitos y los pasos para abrir el sitio, con y sin Python. |
+| `Informe.md` | Describe el funcionamiento del proyecto y los servicios externos utilizados. |
 
 ## 10. Requisitos de ejecución
 
-- Navegador web moderno con soporte ES2015+ (fetch, optional chaining, arrow functions).
-- **Conexión a internet** requerida para:
-  - Cargar Leaflet y los tiles de OpenStreetMap.
-  - Consumir la API USIG (una llamada por cada sede).
-- Servidor local necesario para cargar los archivos JSON (abrir el HTML mediante doble clic
-  puede ser bloqueado por el navegador):
-  ```bash
-  python -m http.server 8080
-  ```
+- Se necesita un navegador moderno y conexión a internet para el mapa y la búsqueda de direcciones.
+- También se necesita iniciar un servidor local para que el navegador pueda cargar los archivos
+  del proyecto. Python no es obligatorio; se puede usar Live Server o Node.js.
+- `README.md` contiene los pasos detallados para ejecutar el sitio con esas alternativas.
 
 ## 11. Posibles mejoras (no requeridas por las pautas)
 
