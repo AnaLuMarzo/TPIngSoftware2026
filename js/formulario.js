@@ -23,12 +23,12 @@ function cerrarInscripciones() {
 function actualizarEstadoCierreInscripciones() {
     if (!fechaHoraCierreInscripciones || !formulario) return;
 
-    const tiempoRestante = fechaHoraCierreInscripciones.getTime() - Date.now();
-    if (tiempoRestante <= 0) {
+    if (!estaInscripcionAbierta(fechaHoraCierreInscripciones)) {
         cerrarInscripciones();
         return;
     }
 
+    const tiempoRestante = fechaHoraCierreInscripciones.getTime() - Date.now();
     if (botonEnviarInscripcion) botonEnviarInscripcion.disabled = false;
     window.setTimeout(actualizarEstadoCierreInscripciones, Math.min(tiempoRestante, 60_000));
 }
@@ -43,20 +43,8 @@ async function cargarCierreInscripciones() {
         const charlas = await respuesta.json();
         if (!Array.isArray(charlas)) throw new Error('La lista de charlas no es válida.');
 
-        let ultimaFechaHora = null;
-        for (const charla of charlas) {
-            if (!charla || typeof charla.Fecha !== 'string' || typeof charla.Horario !== 'string' ||
-                !/^\d{4}-\d{2}-\d{2}$/.test(charla.Fecha) ||
-                !/^([01]\d|2[0-3]):[0-5]\d$/.test(charla.Horario)) continue;
-
-            const fechaHora = `${charla.Fecha}T${charla.Horario}:00`;
-            if (Number.isNaN(new Date(fechaHora).getTime())) continue;
-            if (!ultimaFechaHora || fechaHora > ultimaFechaHora) ultimaFechaHora = fechaHora;
-        }
-
-        if (!ultimaFechaHora) throw new Error('No hay charlas con fecha y horario válidos.');
-
-        fechaHoraCierreInscripciones = new Date(ultimaFechaHora);
+        fechaHoraCierreInscripciones = obtenerFechaHoraLimiteInscripcion(charlas);
+        if (!fechaHoraCierreInscripciones) throw new Error('No hay charlas con fecha y horario válidos.');
         const fechaFormateada = fechaHoraCierreInscripciones.toLocaleDateString('es-AR', {
             weekday: 'long',
             day: 'numeric',
@@ -96,7 +84,7 @@ if (formulario) formulario.addEventListener('submit', (evento) => {
         }
         return;
     }
-    if (Date.now() >= fechaHoraCierreInscripciones.getTime()) {
+    if (!estaInscripcionAbierta(fechaHoraCierreInscripciones)) {
         cerrarInscripciones();
         return;
     }
@@ -115,8 +103,7 @@ if (formulario) formulario.addEventListener('submit', (evento) => {
     }
     const telefono = formulario.elements.telefono;
     if (telefono) {
-        const cantidadDigitos = telefono.value.replace(/\D/g, '').length;
-        telefono.setCustomValidity(telefono.value.trim() && cantidadDigitos < 8
+        telefono.setCustomValidity(telefono.value.trim() && !esTelefonoValido(telefono.value)
             ? 'El teléfono debe tener al menos 8 números.'
             : '');
     }

@@ -11,7 +11,7 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 |----------|-------------------|-----|
 | HTML5 | Estándar del navegador (no se instala) | Estructura de `main.html`, `charlas.html` y los fragmentos `formulario.html` y `mapa.html` |
 | CSS3 | Estándar del navegador (no se instala) | Estilos y maquetación (`css/styles.css`) |
-| JavaScript (ES2015+) | ES2015 o posterior | Carga de secciones (`js/main.js`), formulario (`js/formulario.js`), mapa (`js/mapa.js`), charlas (`js/charlas.js`) y validación de sedes (`js/validaciones.js`) |
+| JavaScript (ES2015+) | ES2015 o posterior | Carga de secciones (`js/main.js`), formulario (`js/formulario.js`), mapa (`js/mapa.js`), charlas (`js/charlas.js`) y validaciones compartidas (`js/validaciones.js`) |
 
 ### Librerías externas
 
@@ -34,12 +34,9 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 
 - `data/charlas.json` contiene las charlas precargadas; cada charla identifica su sede por nombre.
 - `data/sedes.json` contiene nombres y direcciones, sin coordenadas.
-- Al cargar el mapa, la aplicación envía cada dirección a USIG y utiliza la respuesta para
-  colocar los marcadores con Leaflet.
-- El buscador del mapa comprueba si una dirección corresponde a una sede registrada. Si lo es,
-  centra el mapa en esa sede; si no, informa **"No es una Sede"** y no agrega un marcador.
-- La portada muestra tres charlas y el enlace **"Ver más charlas"** abre `charlas.html`, donde
-  se muestra el listado completo. Ambas vistas obtienen la información desde los archivos JSON.
+- Al cargar el mapa, la aplicación envía cada dirección a USIG y utiliza la respuesta para colocar los marcadores con Leaflet.
+- El buscador del mapa comprueba si una dirección corresponde a una sede registrada. Si lo es,centra el mapa en esa sede; si no, informa **"No es una Sede"** y no agrega un marcador.
+- La portada muestra tres charlas y el enlace **"Ver más charlas"** abre `charlas.html`, donde se muestra el listado completo. Ambas vistas obtienen la información desde los archivos JSON.
 
 ### Herramientas recomendadas
 
@@ -62,18 +59,15 @@ El código se entrega en un archivo `.zip`. Seguir estos pasos:
    ```bash
    python -m http.server 8080
    ```
-5. Abrir `http://localhost:8080/main.html` en el navegador. No abrir el archivo con doble clic,
-  porque el navegador podría bloquear la lectura de los JSON.
+5. Abrir `http://localhost:8080/main.html` en el navegador. No abrir el archivo con doble clic, porque el navegador podría bloquear la lectura de los JSON.
 
-Si no tiene Python instalado, puede usar cualquiera de estas alternativas desde la carpeta del
-proyecto ya descomprimida:
+Si no tiene Python instalado, puede usar cualquiera de estas alternativas desde la carpeta del proyecto ya descomprimida:
 
 #### Opción A: Visual Studio Code y Live Server
 
 1. Abrir la carpeta del proyecto en Visual Studio Code.
 2. Instalar la extensión **Live Server** si todavía no está instalada.
-3. Abrir `main.html` y seleccionar **Go Live** en la barra inferior, o hacer clic derecho sobre
-  el archivo y elegir **Open with Live Server**.
+3. Abrir `main.html` y seleccionar **Go Live** en la barra inferior, o hacer clic derecho sobre el archivo y elegir **Open with Live Server**.
 4. Se abrirá el sitio en una dirección local, normalmente `http://127.0.0.1:5500/main.html`.
 
 #### Opción B: Node.js
