@@ -17,6 +17,20 @@ Para abrir el prototipo se necesita un navegador actualizado, conexión a intern
 - **Búsqueda de sedes**: se puede buscar una dirección; la aplicación consulta USIG y verifica si corresponde a una sede registrada. Solo las sedes existentes se pueden localizar en el mapa.
 - **Consulta de charlas**: la portada presenta tres actividades y `charlas.html` muestra el listado completo de 15 charlas.
 
+### Flujo del prototipo y relación con los casos de uso
+
+El usuario entra a la página de inicio y puede consultar las charlas destacadas o abrir el listado
+completo. Desde cada charla puede ir al mapa y ver la sede correspondiente. También puede completar
+el formulario de inscripción, que valida los datos y comprueba la dirección, pero no guarda ni envía
+la postulación porque el prototipo no tiene un servidor de inscripciones.
+
+| Caso de uso | Estado | Flujo actual |
+|-------------|--------|--------------|
+| Consultar información de charlas | Implementado | `main.html` muestra tres charlas y `charlas.html` permite consultar el listado completo. |
+| Mostrar mapa | Implementado | El mapa muestra las sedes; desde cada charla del listado completo, el botón **“Ver sede en el mapa”** centra el mapa en su ubicación y abre el marcador. |
+| Modificar información de charla | No implementado | No hay una pantalla para editar charlas. Los datos solo se cambian modificando manualmente el archivo JSON. |
+| Registrarse como postulante | Implementado | El formulario valida los datos y la dirección, y confirma que son válidos (No registra ni persiste la postulación). |
+
 ## 3. Servicios externos utilizados
 
 | Servicio | URL | Versión / CDN | Rol |
