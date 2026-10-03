@@ -65,7 +65,33 @@ El código se entrega en un archivo `.zip`. Seguir estos pasos:
 5. Abrir `http://localhost:8080/main.html` en el navegador. No abrir el archivo con doble clic,
   porque el navegador podría bloquear la lectura de los JSON.
 
-> No se necesita instalar paquetes con npm. Leaflet se carga desde CDN; se requiere internet para Leaflet, OpenStreetMap y USIG.
+Si no tiene Python instalado, puede usar cualquiera de estas alternativas desde la carpeta del
+proyecto ya descomprimida:
+
+#### Opción A: Visual Studio Code y Live Server
+
+1. Abrir la carpeta del proyecto en Visual Studio Code.
+2. Instalar la extensión **Live Server** si todavía no está instalada.
+3. Abrir `main.html` y seleccionar **Go Live** en la barra inferior, o hacer clic derecho sobre
+  el archivo y elegir **Open with Live Server**.
+4. Se abrirá el sitio en una dirección local, normalmente `http://127.0.0.1:5500/main.html`.
+
+#### Opción B: Node.js
+
+1. Instalar Node.js, que incluye npm, si todavía no está instalado.
+2. Abrir una terminal en la carpeta del proyecto y ejecutar:
+  ```bash
+  npx --yes http-server -p 8080
+  ```
+3. Abrir `http://localhost:8080/main.html` en el navegador.
+
+La dirección local funciona únicamente en la computadora donde se inició el servidor. Cada persona
+que reciba el ZIP debe iniciar su propio servidor. No se debe abrir `main.html` con doble clic,
+porque el navegador puede bloquear la carga de archivos JSON y de las secciones HTML.
+
+> No se necesita instalar paquetes del proyecto con npm. Leaflet se carga desde CDN; se requiere
+> internet para Leaflet, OpenStreetMap, USIG y para descargar `http-server` la primera vez que se
+> usa la opción de Node.js.
 
 ---
 
