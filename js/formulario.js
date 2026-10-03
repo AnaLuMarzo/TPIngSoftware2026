@@ -73,7 +73,7 @@ async function cargarCierreInscripciones() {
 
 if (formulario) cargarCierreInscripciones();
 
-if (formulario) formulario.addEventListener('submit', (evento) => {
+if (formulario) formulario.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     const estado = document.getElementById('estado-inscripcion');
 
@@ -124,6 +124,42 @@ if (formulario) formulario.addEventListener('submit', (evento) => {
         }
         formulario.reportValidity();
         return;
+    }
+
+    const direccion = formulario.elements.direccion;
+    if (direccion) {
+        botonEnviarInscripcion.disabled = true;
+        if (estado) estado.textContent = 'Verificando la dirección...';
+
+        try {
+            const direccionValida = await esDireccionValida(direccion.value);
+            if (!estaInscripcionAbierta(fechaHoraCierreInscripciones)) {
+                cerrarInscripciones();
+                return;
+            }
+            if (!direccionValida) {
+                direccion.setCustomValidity('Ingresá una dirección que se pueda encontrar.');
+                if (estado) {
+                    estado.textContent = 'No se encontró la dirección. Revisá la calle y la altura.';
+                    estado.className = 'form-status error';
+                }
+                formulario.reportValidity();
+                return;
+            }
+        } catch (error) {
+            console.error('No se pudo verificar la dirección:', error);
+            direccion.setCustomValidity('No se pudo verificar la dirección. Revisá tu conexión e intentá nuevamente.');
+            if (estado) {
+                estado.textContent = 'No se pudo verificar la dirección. Revisá tu conexión e intentá nuevamente.';
+                estado.className = 'form-status error';
+            }
+            formulario.reportValidity();
+            return;
+        } finally {
+            if (estaInscripcionAbierta(fechaHoraCierreInscripciones)) {
+                botonEnviarInscripcion.disabled = false;
+            }
+        }
     }
 
     if (estado) {
