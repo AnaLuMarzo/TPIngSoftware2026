@@ -47,7 +47,7 @@
     <section id="inscripcion">
         <h2>Inscripción de postulantes</h2>
         <p class="subtitle">El registro estará abierto hasta el 7 de noviembre de 2026.</p>
-        <form id="form-inscripcion" class="form-panel" action="#" method="post">
+        <form id="form-inscripcion" class="form-panel" action="#" method="post" novalidate>
             <div class="form-grid">
                 <label>
                     Nombre y apellido*
@@ -59,7 +59,7 @@
                 </label>
                 <label class="full">
                     Fecha de nacimiento*
-                    <input type="date" name="fecha_nacimiento" required>
+                    <input type="date" name="fecha_nacimiento" max="2010-12-31" required>
                 </label>
                 <label class="full">
                     Dirección actual*
@@ -117,6 +117,7 @@
                 </label>
             </div>
             <button type="submit" class="btn btn-accent form-submit">Enviar inscripción</button>
+            <p id="estado-inscripcion" class="form-status" role="status" aria-live="polite"></p>
         </form>
     </section>
 
@@ -140,6 +141,7 @@
         </div>
 
         <div id="mapa"></div>
+        <p id="info-sedes" class="map-status" role="status" aria-live="polite"></p>
     </section>
 
     <!-- ===== Footer ===== -->

@@ -8,6 +8,16 @@ function crearDatoCharla(texto) {
     return elemento;
 }
 
+function esCharlaValida(charla) {
+    if (!charla || typeof charla !== 'object') return false;
+    const camposRequeridos = ['Nombre', 'Tema', 'Aula', 'Fecha', 'Horario', 'Profesor', 'Sede'];
+    if (!camposRequeridos.every(campo =>
+        typeof charla[campo] === 'string' && charla[campo].trim())) return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(charla.Fecha)) return false;
+    const fecha = new Date(`${charla.Fecha}T00:00:00`);
+    return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === charla.Fecha;
+}
+
 function crearTarjetaCharla(charla, sedesPorNombre) {
     const tarjeta = document.createElement('article');
     tarjeta.className = 'card charla-card';
@@ -53,15 +63,32 @@ async function cargarCharlas() {
             respuestaCharlas.json(),
             respuestaSedes.json()
         ]);
-        const sedesPorNombre = new Map(sedes.map(sede => [sede.nombre, sede]));
-        const limite = Number(contenedor.dataset.limite) || charlas.length;
+        if (!Array.isArray(charlas) || !Array.isArray(sedes)) {
+            throw new Error('Los archivos de datos no contienen listas válidas.');
+        }
+        const sedesValidas = sedes.filter(sede =>
+            sede && typeof sede.nombre === 'string' && sede.nombre.trim() &&
+            typeof sede.direccion === 'string' && sede.direccion.trim());
+        const sedesPorNombre = new Map(sedesValidas.map(sede => [sede.nombre, sede]));
+        const charlasValidas = charlas.filter(esCharlaValida);
+        const limiteConfigurado = Number(contenedor.dataset.limite);
+        const limite = Number.isInteger(limiteConfigurado) && limiteConfigurado > 0
+            ? limiteConfigurado
+            : charlasValidas.length;
 
-        charlas.slice(0, limite).forEach(charla => {
+        charlasValidas.slice(0, limite).forEach(charla => {
             contenedor.append(crearTarjetaCharla(charla, sedesPorNombre));
         });
 
-        if (charlas.length === 0) {
-            contenedor.textContent = 'No hay charlas disponibles.';
+        if (charlasValidas.length === 0) {
+            contenedor.textContent = charlas.length === 0
+                ? 'No hay charlas disponibles.'
+                : 'No hay charlas válidas para mostrar.';
+        } else if (charlasValidas.length < charlas.length) {
+            const aviso = document.createElement('p');
+            aviso.className = 'data-warning';
+            aviso.textContent = 'Algunas charlas no se muestran porque sus datos están incompletos o son inválidos.';
+            contenedor.append(aviso);
         }
     } catch (error) {
         console.error('Error al cargar las charlas:', error);

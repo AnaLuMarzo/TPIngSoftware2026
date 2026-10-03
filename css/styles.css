@@ -249,6 +249,28 @@ section .subtitle {
     width: 100%;
 }
 
+.form-status,
+.map-status,
+.data-warning {
+    margin-top: 0.75rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.form-status:empty,
+.map-status:empty {
+    display: none;
+}
+
+.form-status.error,
+.data-warning {
+    color: #a12622;
+}
+
+.form-status.success {
+    color: #176b3a;
+}
+
 /* ===== Buscador de sedes ===== */
 .buscador-sede {
     max-width: 600px;

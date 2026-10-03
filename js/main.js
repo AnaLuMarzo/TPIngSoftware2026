@@ -7,11 +7,14 @@ const URL_USIG = 'https://servicios.usig.buenosaires.gob.ar/normalizar/';
 const URL_SEDES = 'data/sedes.json';
 
 // ===== Inicialización del mapa (Leaflet + OpenStreetMap) =====
-const mapa = L.map('mapa').setView([-34.6037, -58.3816], 11);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(mapa);
+const elementoMapa = document.getElementById('mapa');
+let mapa = null;
+if (elementoMapa && window.L) {
+    mapa = L.map(elementoMapa).setView([-34.6037, -58.3816], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(mapa);
+}
 
 /**
  * Normaliza una dirección usando la API de USIG (Gobierno de CABA).
@@ -46,12 +49,17 @@ async function normalizarDireccion(direccion) {
     // coordenadas.x = longitud (lng), coordenadas.y = latitud (lat) — vienen como string
     const lng = parseFloat(r.coordenadas.x);
     const lat = parseFloat(r.coordenadas.y);
-    if (Number.isNaN(lng) || Number.isNaN(lat)) {
+    if (!Number.isFinite(lng) || !Number.isFinite(lat) ||
+        lng < -180 || lng > 180 || lat < -90 || lat > 90) {
         console.warn('Coordenadas inválidas en la respuesta de USIG:', r);
         return null;
     }
 
-    return { lat, lng, direccionNormalizada: r.direccion };
+    return {
+        lat,
+        lng,
+        direccionNormalizada: typeof r.direccion === 'string' ? r.direccion : direccion
+    };
 }
 
 /**
@@ -69,34 +77,60 @@ const Sedes = [];
  * @param {string} extra - Texto opcional adicional (referencia).
  */
 function agregarMarcador(result, nombre, extra = '') {
-    const html =
-        `<strong>${nombre}</strong><br>` +
-        result.direccionNormalizada + '<br>' +
-        (extra ? `<em>${extra}</em>` : '');
+    const popup = document.createElement('div');
+    const titulo = document.createElement('strong');
+    titulo.textContent = nombre;
+    popup.append(titulo, document.createElement('br'), result.direccionNormalizada);
+    if (extra) {
+        popup.append(document.createElement('br'));
+        const referencia = document.createElement('em');
+        referencia.textContent = extra;
+        popup.append(referencia);
+    }
 
     return L.marker([result.lat, result.lng])
         .addTo(mapa)
-        .bindPopup(html);
+        .bindPopup(popup);
 }
 
 /**
  * Esto carga el JSON de sedes y, para cada una, consume la API USIG para ubicarla en el mapa.
  */
 async function cargarSedes() {
+    const estado = document.getElementById('info-sedes');
+    if (!mapa) {
+        if (estado) estado.textContent = 'El mapa no está disponible en este momento.';
+        return;
+    }
+
     let sedes;
     try {
         const res = await fetch(URL_SEDES);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         sedes = await res.json();
+        if (!Array.isArray(sedes)) throw new Error('El archivo de sedes no contiene una lista válida.');
     } catch (err) {
         console.error('No se pudo cargar', URL_SEDES, err);
-        alert('No se pudo cargar la lista de sedes. Verificá que estés ejecutando la aplicación ' +
-              'desde un servidor local (ej. `python -m http.server 8080`).');
+        if (estado) estado.textContent = 'No se pudo cargar la lista de sedes. Verificá la conexión e intentá nuevamente.';
         return;
     }
 
-    const promises = sedes.map(async (sede) => {
-        const result = await normalizarDireccion(sede.direccion);
+    const sedesValidas = sedes.filter(sede =>
+        sede && typeof sede.nombre === 'string' && sede.nombre.trim() &&
+        typeof sede.direccion === 'string' && sede.direccion.trim());
+    if (sedesValidas.length === 0) {
+        if (estado) estado.textContent = 'No hay sedes válidas disponibles para mostrar.';
+        return;
+    }
+
+    const promises = sedesValidas.map(async (sede) => {
+        let result;
+        try {
+            result = await normalizarDireccion(sede.direccion.trim());
+        } catch (err) {
+            console.warn('Falló la búsqueda de la dirección de una sede:', err);
+            return;
+        }
         if (!result) {
             console.warn('No se pudo geocodificar la sede:', sede);
             return;
@@ -112,6 +146,12 @@ async function cargarSedes() {
     });
 
     await Promise.all(promises);
+
+    if (Sedes.length === 0) {
+        if (estado) estado.textContent = 'No se pudieron ubicar las sedes. Revisá la conexión e intentá más tarde.';
+        return;
+    }
+    if (estado) estado.textContent = `Se muestran ${Sedes.length} de ${sedesValidas.length} sedes.`;
 
     // Encuadra el mapa en todos los marcadores colocados.
     const bounds = mapa.getBounds();
@@ -137,6 +177,15 @@ function normalizarTexto(s) {
 async function buscarDireccion(direccion) {
     const btn = document.getElementById('btn-buscar-sede');
     const info = document.getElementById('info-buscar-sede');
+    if (!btn || !info) return;
+    if (!direccion.trim()) {
+        info.textContent = 'Ingresá una dirección para realizar la búsqueda.';
+        return;
+    }
+    if (!mapa) {
+        info.textContent = 'El mapa no está disponible en este momento.';
+        return;
+    }
     btn.disabled = true;
     info.textContent = 'Buscando la ubicación…';
 
@@ -160,6 +209,9 @@ async function buscarDireccion(direccion) {
         mapa.setView([sede.lat, sede.lng], 15);
         sede.marker.openPopup();
         info.textContent = `Sede encontrada: ${sede.nombre}`;
+    } catch (err) {
+        console.error('No se pudo buscar la dirección:', err);
+        info.textContent = 'No se pudo completar la búsqueda. Verificá tu conexión e intentá nuevamente.';
     } finally {
         btn.disabled = false;
     }
@@ -173,7 +225,7 @@ function initBuscador() {
     const submit = (e) => {
         if (e) e.preventDefault();
         const direccion = input.value.trim();
-        if (direccion) buscarDireccion(direccion);
+        buscarDireccion(direccion);
     };
 
     btn.addEventListener('click', submit);
@@ -186,20 +238,47 @@ initBuscador();
 // ===== Formulario de inscripción =====
 const form = document.getElementById('form-inscripcion');
 
-form.addEventListener('submit', (e) => {
+if (form) form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const estado = document.getElementById('estado-inscripcion');
+    const camposTexto = form.querySelectorAll('input[required]:not([type="email"]), select[required]');
+    camposTexto.forEach(campo => {
+        campo.setCustomValidity(campo.value.trim() ? '' : 'Completá este campo.');
+    });
+    const fechaNacimiento = form.elements.fecha_nacimiento;
+    if (fechaNacimiento) {
+        const fechaLimite = '2010-12-31';
+        const fechaFueraDeRango = fechaNacimiento.value && fechaNacimiento.value > fechaLimite;
+        fechaNacimiento.setCustomValidity(fechaFueraDeRango
+            ? 'La fecha de nacimiento debe ser igual o anterior al 31/12/2010.'
+            : '');
+    }
+    const telefono = form.elements.telefono;
+    if (telefono) {
+        const cantidadDigitos = telefono.value.replace(/\D/g, '').length;
+        telefono.setCustomValidity(telefono.value.trim() && cantidadDigitos < 8
+            ? 'El teléfono debe tener al menos 8 números.'
+            : '');
+    }
+    const email = form.elements.email;
+    if (email) {
+        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+        email.setCustomValidity(emailValido ? '' : 'Ingresá un correo electrónico válido.');
+    }
 
     if (!form.checkValidity()) {
+        if (estado) {
+            estado.textContent = 'Revisá los campos obligatorios, que el teléfono tenga al menos 8 números, el formato del correo y la fecha de nacimiento (hasta el 31/12/2010).';
+            estado.className = 'form-status error';
+        }
         form.reportValidity();
         return;
     }
 
-    // Recopilar datos del formulario
-    const postulante = Object.fromEntries(new FormData(form).entries());
-
-    // TODO: enviar los datos al backend (fetch a la API de inscripción)
-    console.log('Postulante:', postulante);
-
-    alert('¡Gracias! Tu inscripción fue registrada correctamente.');
+    // El prototipo no cuenta con un backend: no se afirma que los datos se hayan guardado.
+    if (estado) {
+        estado.textContent = 'Los datos son válidos. Esta demostración no envía ni guarda la inscripción.';
+        estado.className = 'form-status success';
+    }
     form.reset();
 });
