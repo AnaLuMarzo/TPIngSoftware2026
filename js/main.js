@@ -25,77 +25,74 @@ if (elementoMapa && window.L) {
  *          Datos geográficos y la dirección ya normalizada, o null si no hay resultado.
  */
 async function normalizarDireccion(direccion) {
-    const params = new URLSearchParams({
-        direccion: direccion,
+    const parametros = new URLSearchParams({
+        direccion,
         geocodificar: 'TRUE'
     });
-    const url = `${URL_USIG}?${params.toString()}`;
+    const url = `${URL_USIG}?${parametros.toString()}`;
 
-    const res = await fetch(url);
-    if (!res.ok) {
-        console.warn('USIG devolvió un error', res.status, direccion);
+    const respuesta = await fetch(url);
+    if (!respuesta.ok) {
+        console.warn('USIG devolvió un error', respuesta.status, direccion);
         return null;
     }
 
-    const data = await res.json();
+    const datosRespuesta = await respuesta.json();
 
     // USIG devuelve: { direccionesNormalizadas: [ { direccion, coordenadas: {x, y}, ... } ] }
-    const r = data?.direccionesNormalizadas?.[0];
-    if (!r || !r.coordenadas) {
+    const direccionEncontrada = datosRespuesta?.direccionesNormalizadas?.[0];
+    if (!direccionEncontrada || !direccionEncontrada.coordenadas) {
         console.warn('USIG no devolvió resultados para:', direccion);
         return null;
     }
 
     // coordenadas.x = longitud (lng), coordenadas.y = latitud (lat) — vienen como string
-    const lng = parseFloat(r.coordenadas.x);
-    const lat = parseFloat(r.coordenadas.y);
-    if (!Number.isFinite(lng) || !Number.isFinite(lat) ||
-        lng < -180 || lng > 180 || lat < -90 || lat > 90) {
-        console.warn('Coordenadas inválidas en la respuesta de USIG:', r);
+    const longitud = parseFloat(direccionEncontrada.coordenadas.x);
+    const latitud = parseFloat(direccionEncontrada.coordenadas.y);
+    if (!Number.isFinite(longitud) || !Number.isFinite(latitud) ||
+        longitud < -180 || longitud > 180 || latitud < -90 || latitud > 90) {
+        console.warn('Coordenadas inválidas en la respuesta de USIG:', direccionEncontrada);
         return null;
     }
 
     return {
-        lat,
-        lng,
-        direccionNormalizada: typeof r.direccion === 'string' ? r.direccion : direccion
+        latitud,
+        longitud,
+        direccionNormalizada: typeof direccionEncontrada.direccion === 'string'
+            ? direccionEncontrada.direccion
+            : direccion
     };
 }
 
 /**
- * Sedes ya geocodificadas y colocadas en el mapa.
- * Cada entrada: { lat, lng, nombre, direccionNormalizada, marker }
- * Se usa para comparar contra las búsquedas del usuario.
+ * Se conserva la dirección normalizada para comparar búsquedas con sedes registradas.
  */
-const Sedes = [];
+const sedesGeolocalizadas = [];
 
 /**
  * Dado un resultado de USIG y datos de la sede, se agrega un marcador al mapa.
  *
- * @param {object} result - Resultado de `normalizarDireccion()`.
+ * @param {object} ubicacion - Resultado de `normalizarDireccion()`.
  * @param {string} nombre - Nombre de la sede.
- * @param {string} extra - Texto opcional adicional (referencia).
+ * @param {string} referencia - Texto opcional adicional.
  */
-function agregarMarcador(result, nombre, extra = '') {
-    const popup = document.createElement('div');
+function agregarMarcador(ubicacion, nombre, referencia = '') {
+    const contenidoPopup = document.createElement('div');
     const titulo = document.createElement('strong');
     titulo.textContent = nombre;
-    popup.append(titulo, document.createElement('br'), result.direccionNormalizada);
-    if (extra) {
-        popup.append(document.createElement('br'));
-        const referencia = document.createElement('em');
-        referencia.textContent = extra;
-        popup.append(referencia);
+    contenidoPopup.append(titulo, document.createElement('br'), ubicacion.direccionNormalizada);
+    if (referencia) {
+        contenidoPopup.append(document.createElement('br'));
+        const textoReferencia = document.createElement('em');
+        textoReferencia.textContent = referencia;
+        contenidoPopup.append(textoReferencia);
     }
 
-    return L.marker([result.lat, result.lng])
+    return L.marker([ubicacion.latitud, ubicacion.longitud])
         .addTo(mapa)
-        .bindPopup(popup);
+        .bindPopup(contenidoPopup);
 }
 
-/**
- * Esto carga el JSON de sedes y, para cada una, consume la API USIG para ubicarla en el mapa.
- */
 async function cargarSedes() {
     const estado = document.getElementById('info-sedes');
     if (!mapa) {
@@ -105,55 +102,52 @@ async function cargarSedes() {
 
     let sedes;
     try {
-        const res = await fetch(URL_SEDES);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        sedes = await res.json();
+        const respuesta = await fetch(URL_SEDES);
+        if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+        sedes = await respuesta.json();
         if (!Array.isArray(sedes)) throw new Error('El archivo de sedes no contiene una lista válida.');
-    } catch (err) {
-        console.error('No se pudo cargar', URL_SEDES, err);
+    } catch (error) {
+        console.error('No se pudo cargar', URL_SEDES, error);
         if (estado) estado.textContent = 'No se pudo cargar la lista de sedes. Verificá la conexión e intentá nuevamente.';
         return;
     }
 
-    const sedesValidas = sedes.filter(sede =>
-        sede && typeof sede.nombre === 'string' && sede.nombre.trim() &&
-        typeof sede.direccion === 'string' && sede.direccion.trim());
+    const sedesValidas = sedes.filter(esSedeValida);
     if (sedesValidas.length === 0) {
         if (estado) estado.textContent = 'No hay sedes válidas disponibles para mostrar.';
         return;
     }
 
-    const promises = sedesValidas.map(async (sede) => {
-        let result;
+    const tareasGeocodificacion = sedesValidas.map(async (sede) => {
+        let ubicacion;
         try {
-            result = await normalizarDireccion(sede.direccion.trim());
-        } catch (err) {
-            console.warn('Falló la búsqueda de la dirección de una sede:', err);
+            ubicacion = await normalizarDireccion(sede.direccion.trim());
+        } catch (error) {
+            console.warn('Falló la búsqueda de la dirección de una sede:', error);
             return;
         }
-        if (!result) {
+        if (!ubicacion) {
             console.warn('No se pudo geocodificar la sede:', sede);
             return;
         }
-        const marker = agregarMarcador(result, sede.nombre, sede.referencia || '');
-        Sedes.push({
-            lat: result.lat,
-            lng: result.lng,
+        const marcador = agregarMarcador(ubicacion, sede.nombre, sede.referencia || '');
+        sedesGeolocalizadas.push({
+            latitud: ubicacion.latitud,
+            longitud: ubicacion.longitud,
             nombre: sede.nombre,
-            direccionNormalizada: result.direccionNormalizada,
-            marker,
+            direccionNormalizada: ubicacion.direccionNormalizada,
+            marcador,
         });
     });
 
-    await Promise.all(promises);
+    await Promise.all(tareasGeocodificacion);
 
-    if (Sedes.length === 0) {
+    if (sedesGeolocalizadas.length === 0) {
         if (estado) estado.textContent = 'No se pudieron ubicar las sedes. Revisá la conexión e intentá más tarde.';
         return;
     }
-    if (estado) estado.textContent = `Se muestran ${Sedes.length} de ${sedesValidas.length} sedes.`;
+    if (estado) estado.textContent = `Se muestran ${sedesGeolocalizadas.length} de ${sedesValidas.length} sedes.`;
 
-    // Encuadra el mapa en todos los marcadores colocados.
     const bounds = mapa.getBounds();
     if (bounds.isValid()) {
         mapa.fitBounds(bounds.pad(0.2));
@@ -163,8 +157,8 @@ async function cargarSedes() {
 /**
  * Normaliza un texto para comparar de forma insensible a mayúsculas/espacios.
  */
-function normalizarTexto(s) {
-    return (s || '').trim().toUpperCase();
+function normalizarTexto(texto) {
+    return (texto || '').trim().toUpperCase();
 }
 
 /**
@@ -175,71 +169,72 @@ function normalizarTexto(s) {
  * ni se mueve el mapa; solo se notifica al usuario.
  */
 async function buscarDireccion(direccion) {
-    const btn = document.getElementById('btn-buscar-sede');
-    const info = document.getElementById('info-buscar-sede');
-    if (!btn || !info) return;
+    const botonBuscar = document.getElementById('btn-buscar-sede');
+    const estadoBusqueda = document.getElementById('info-buscar-sede');
+    if (!botonBuscar || !estadoBusqueda) return;
     if (!direccion.trim()) {
-        info.textContent = 'Ingresá una dirección para realizar la búsqueda.';
+        estadoBusqueda.textContent = 'Ingresá una dirección para realizar la búsqueda.';
         return;
     }
     if (!mapa) {
-        info.textContent = 'El mapa no está disponible en este momento.';
+        estadoBusqueda.textContent = 'El mapa no está disponible en este momento.';
         return;
     }
-    btn.disabled = true;
-    info.textContent = 'Buscando la ubicación…';
+    botonBuscar.disabled = true;
+    estadoBusqueda.textContent = 'Buscando la ubicación…';
 
     try {
-        const result = await normalizarDireccion(direccion);
-        if (!result) {
-            info.textContent = 'No encontramos esa dirección. Probá escribir, por ejemplo: "cordoba 1538, caba".';
+        const ubicacion = await normalizarDireccion(direccion);
+        if (!ubicacion) {
+            estadoBusqueda.textContent = 'No encontramos esa dirección. Probá escribir, por ejemplo: "cordoba 1538, caba".';
             return;
         }
 
         // Buscar si la dirección normalizada coincide con alguna sede registrada.
-        const sede = Sedes.find(s =>
-            normalizarTexto(s.direccionNormalizada) === normalizarTexto(result.direccionNormalizada));
+        const sede = sedesGeolocalizadas.find(sedeRegistrada =>
+            normalizarTexto(sedeRegistrada.direccionNormalizada) === normalizarTexto(ubicacion.direccionNormalizada));
 
         if (!sede) {
-            info.textContent = 'No es una Sede.';
+            estadoBusqueda.textContent = 'No es una Sede.';
             return;
         }
 
-        // Resaltar el marcador de la sede encontrada (ya existe en el mapa).
-        mapa.setView([sede.lat, sede.lng], 15);
-        sede.marker.openPopup();
-        info.textContent = `Sede encontrada: ${sede.nombre}`;
-    } catch (err) {
-        console.error('No se pudo buscar la dirección:', err);
-        info.textContent = 'No se pudo completar la búsqueda. Verificá tu conexión e intentá nuevamente.';
+        mapa.setView([sede.latitud, sede.longitud], 15);
+        sede.marcador.openPopup();
+        estadoBusqueda.textContent = `Sede encontrada: ${sede.nombre}`;
+    } catch (error) {
+        console.error('No se pudo buscar la dirección:', error);
+        estadoBusqueda.textContent = 'No se pudo completar la búsqueda. Verificá tu conexión e intentá nuevamente.';
     } finally {
-        btn.disabled = false;
+        botonBuscar.disabled = false;
     }
 }
 
-function initBuscador() {
+function inicializarBuscador() {
     const input = document.getElementById('input-buscar-sede');
-    const btn = document.getElementById('btn-buscar-sede');
-    if (!input || !btn) return;
+    const botonBuscar = document.getElementById('btn-buscar-sede');
+    if (!input || !botonBuscar) return;
 
-    const submit = (e) => {
-        if (e) e.preventDefault();
+    const enviarBusqueda = (evento) => {
+        if (evento) evento.preventDefault();
         const direccion = input.value.trim();
         buscarDireccion(direccion);
     };
 
-    btn.addEventListener('click', submit);
-    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(e); });
+    botonBuscar.addEventListener('click', enviarBusqueda);
+    input.addEventListener('keydown', (evento) => {
+        if (evento.key === 'Enter') enviarBusqueda(evento);
+    });
 }
 
 cargarSedes();
-initBuscador();
+inicializarBuscador();
 
 // ===== Formulario de inscripción =====
 const form = document.getElementById('form-inscripcion');
 
-if (form) form.addEventListener('submit', (e) => {
-    e.preventDefault();
+if (form) form.addEventListener('submit', (evento) => {
+    evento.preventDefault();
     const estado = document.getElementById('estado-inscripcion');
     const camposTexto = form.querySelectorAll('input[required]:not([type="email"]), select[required]');
     camposTexto.forEach(campo => {
@@ -248,8 +243,8 @@ if (form) form.addEventListener('submit', (e) => {
     const fechaNacimiento = form.elements.fecha_nacimiento;
     if (fechaNacimiento) {
         const fechaLimite = '2010-12-31';
-        const fechaFueraDeRango = fechaNacimiento.value && fechaNacimiento.value > fechaLimite;
-        fechaNacimiento.setCustomValidity(fechaFueraDeRango
+        const fechaSuperaElLimite = fechaNacimiento.value && fechaNacimiento.value > fechaLimite;
+        fechaNacimiento.setCustomValidity(fechaSuperaElLimite
             ? 'La fecha de nacimiento debe ser igual o anterior al 31/12/2010.'
             : '');
     }

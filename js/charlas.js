@@ -2,10 +2,10 @@ const URL_CHARLAS = 'data/charlas.json';
 const URL_SEDES_CHARLAS = 'data/sedes.json';
 
 function crearDatoCharla(texto) {
-    const elemento = document.createElement('p');
-    elemento.className = 'meta';
-    elemento.textContent = texto;
-    return elemento;
+    const dato = document.createElement('p');
+    dato.className = 'meta';
+    dato.textContent = texto;
+    return dato;
 }
 
 function esCharlaValida(charla) {
@@ -66,9 +66,7 @@ async function cargarCharlas() {
         if (!Array.isArray(charlas) || !Array.isArray(sedes)) {
             throw new Error('Los archivos de datos no contienen listas válidas.');
         }
-        const sedesValidas = sedes.filter(sede =>
-            sede && typeof sede.nombre === 'string' && sede.nombre.trim() &&
-            typeof sede.direccion === 'string' && sede.direccion.trim());
+        const sedesValidas = sedes.filter(esSedeValida);
         const sedesPorNombre = new Map(sedesValidas.map(sede => [sede.nombre, sede]));
         const charlasValidas = charlas.filter(esCharlaValida);
         const limiteConfigurado = Number(contenedor.dataset.limite);
