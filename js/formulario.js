@@ -95,9 +95,7 @@ if (formulario) formulario.addEventListener('submit', (evento) => {
     });
     const fechaNacimiento = formulario.elements.fecha_nacimiento;
     if (fechaNacimiento) {
-        const fechaLimite = '2010-12-31';
-        const fechaSuperaElLimite = fechaNacimiento.value && fechaNacimiento.value > fechaLimite;
-        fechaNacimiento.setCustomValidity(fechaSuperaElLimite
+        fechaNacimiento.setCustomValidity(fechaNacimiento.value && !esFechaNacimientoValida(fechaNacimiento.value)
             ? 'La fecha de nacimiento debe ser igual o anterior al 31/12/2010.'
             : '');
     }

@@ -32,3 +32,9 @@ function esTelefonoValido(telefono) {
     if (typeof telefono !== 'string') return false;
     return telefono.replace(/\D/g, '').length >= 8;
 }
+
+function esFechaNacimientoValida(fechaNacimiento) {
+    return typeof fechaNacimiento === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(fechaNacimiento) &&
+        fechaNacimiento <= '2010-12-31';
+}
