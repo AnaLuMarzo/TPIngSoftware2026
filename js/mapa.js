@@ -118,10 +118,33 @@ async function cargarSedes() {
 
     const bounds = mapa.getBounds();
     if (bounds.isValid()) mapa.fitBounds(bounds.pad(0.2));
+
+    const parametros = new URLSearchParams(window.location.search);
+    let direccionSolicitada = parametros.get('direccion');
+    if (!direccionSolicitada) {
+        const nombreSede = parametros.get('sede');
+        const sede = sedesGeolocalizadas.find(sedeRegistrada =>
+            normalizarTexto(sedeRegistrada.nombre) === normalizarTexto(nombreSede));
+        if (sede) direccionSolicitada = sede.direccionNormalizada;
+    }
+
+    if (direccionSolicitada) {
+        const input = document.getElementById('input-buscar-sede');
+        if (input) input.value = direccionSolicitada;
+        buscarDireccion(direccionSolicitada);
+    }
 }
 
 function normalizarTexto(texto) {
     return (texto || '').trim().toUpperCase();
+}
+
+function enfocarSedeEnMapa(sede) {
+    mapa.setView([sede.latitud, sede.longitud], 15);
+    sede.marcador.openPopup();
+
+    const estadoBusqueda = document.getElementById('info-buscar-sede');
+    if (estadoBusqueda) estadoBusqueda.textContent = `Sede encontrada: ${sede.nombre}`;
 }
 
 async function buscarDireccion(direccion) {
@@ -153,9 +176,7 @@ async function buscarDireccion(direccion) {
             return;
         }
 
-        mapa.setView([sede.latitud, sede.longitud], 15);
-        sede.marcador.openPopup();
-        estadoBusqueda.textContent = `Sede encontrada: ${sede.nombre}`;
+        enfocarSedeEnMapa(sede);
     } catch (error) {
         console.error('No se pudo buscar la dirección:', error);
         estadoBusqueda.textContent = 'No se pudo completar la búsqueda. Verificá tu conexión e intentá nuevamente.';

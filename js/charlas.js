@@ -19,7 +19,7 @@ function esCharlaValida(charla) {
     return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === charla.Fecha;
 }
 
-function crearTarjetaCharla(charla, sedesPorNombre) {
+function crearTarjetaCharla(charla, sedesPorNombre, mostrarBotonMapa) {
     const tarjeta = document.createElement('article');
     tarjeta.className = 'card charla-card';
 
@@ -43,6 +43,17 @@ function crearTarjetaCharla(charla, sedesPorNombre) {
     tema.className = 'charla-tema';
     tema.textContent = `Tema: ${charla.Tema}`;
     tarjeta.append(tema);
+
+    if (mostrarBotonMapa) {
+        const botonMapa = document.createElement('a');
+        const parametros = new URLSearchParams({
+            direccion: sede ? sede.direccion : charla.Sede
+        });
+        botonMapa.href = `main.html?${parametros.toString()}#sedes`;
+        botonMapa.className = 'btn btn-accent btn-sede-charla';
+        botonMapa.textContent = 'Ver sede en el mapa';
+        tarjeta.append(botonMapa);
+    }
 
     return tarjeta;
 }
@@ -70,13 +81,14 @@ async function cargarCharlas() {
         const sedesValidas = sedes.filter(esSedeValida);
         const sedesPorNombre = new Map(sedesValidas.map(sede => [sede.nombre, sede]));
         const charlasValidas = charlas.filter(esCharlaValida);
+        const mostrarBotonMapa = contenedor.dataset.mostrarMapa === 'true';
         const limiteConfigurado = Number(contenedor.dataset.limite);
         const limite = Number.isInteger(limiteConfigurado) && limiteConfigurado > 0
             ? limiteConfigurado
             : charlasValidas.length;
 
         charlasValidas.slice(0, limite).forEach(charla => {
-            contenedor.append(crearTarjetaCharla(charla, sedesPorNombre));
+            contenedor.append(crearTarjetaCharla(charla, sedesPorNombre, mostrarBotonMapa));
         });
 
         if (charlasValidas.length === 0) {
