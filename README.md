@@ -9,9 +9,9 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 
 | Lenguaje | Versión requerida | Uso |
 |----------|-------------------|-----|
-| HTML5 | Estándar del navegador (no se instala) | Estructura de `main.html` y `charlas.html` |
+| HTML5 | Estándar del navegador (no se instala) | Estructura de `main.html`, `charlas.html` y los fragmentos `formulario.html` y `mapa.html` |
 | CSS3 | Estándar del navegador (no se instala) | Estilos y maquetación (`css/styles.css`) |
-| JavaScript (ES2015+) | ES2015 o posterior | Mapa, formulario y carga de charlas (`js/main.js`, `js/charlas.js`) |
+| JavaScript (ES2015+) | ES2015 o posterior | Carga de secciones (`js/main.js`), formulario (`js/formulario.js`), mapa (`js/mapa.js`), charlas (`js/charlas.js`) y validación de sedes (`js/validaciones.js`) |
 
 ### Librerías externas
 
@@ -46,7 +46,7 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 | Herramienta | Versión requerida | Uso |
 |-------------|-------------------|-----|
 | Navegador web moderno | Última versión (Chrome, Firefox, Edge, Safari) | Ejecutar y visualizar la aplicación |
-| Python | 3.x | Levantar el servidor local para que el navegador lea los archivos JSON |
+| Python | 3.x (opcional) | Alternativa para levantar el servidor local |
 
 ### Cómo ejecutar el proyecto
 

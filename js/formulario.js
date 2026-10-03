@@ -43,16 +43,16 @@ async function cargarCierreInscripciones() {
         const charlas = await respuesta.json();
         if (!Array.isArray(charlas)) throw new Error('La lista de charlas no es válida.');
 
-        const ultimaFechaHora = charlas.reduce((ultima, charla) => {
+        let ultimaFechaHora = null;
+        for (const charla of charlas) {
             if (!charla || typeof charla.Fecha !== 'string' || typeof charla.Horario !== 'string' ||
                 !/^\d{4}-\d{2}-\d{2}$/.test(charla.Fecha) ||
-                !/^([01]\d|2[0-3]):[0-5]\d$/.test(charla.Horario)) return ultima;
+                !/^([01]\d|2[0-3]):[0-5]\d$/.test(charla.Horario)) continue;
 
             const fechaHora = `${charla.Fecha}T${charla.Horario}:00`;
-            return Number.isNaN(new Date(fechaHora).getTime()) || (ultima && fechaHora <= ultima)
-                ? ultima
-                : fechaHora;
-        }, null);
+            if (Number.isNaN(new Date(fechaHora).getTime())) continue;
+            if (!ultimaFechaHora || fechaHora > ultimaFechaHora) ultimaFechaHora = fechaHora;
+        }
 
         if (!ultimaFechaHora) throw new Error('No hay charlas con fecha y horario válidos.');
 

@@ -11,8 +11,9 @@ function crearDatoCharla(texto) {
 function esCharlaValida(charla) {
     if (!charla || typeof charla !== 'object') return false;
     const camposRequeridos = ['Nombre', 'Tema', 'Aula', 'Fecha', 'Horario', 'Profesor', 'Sede'];
-    if (!camposRequeridos.every(campo =>
-        typeof charla[campo] === 'string' && charla[campo].trim())) return false;
+    for (const campo of camposRequeridos) {
+        if (typeof charla[campo] !== 'string' || !charla[campo].trim()) return false;
+    }
     if (!/^\d{4}-\d{2}-\d{2}$/.test(charla.Fecha)) return false;
     const fecha = new Date(`${charla.Fecha}T00:00:00`);
     return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === charla.Fecha;
