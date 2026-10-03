@@ -184,14 +184,30 @@ Durante la verificación se comprobó que la página principal muestra tres char
 | `js/mapa.js` | Muestra las sedes y usa el buscador de direcciones para enfocar sus marcadores. |
 | `js/validaciones.js` | Reúne las reglas del formulario y decide si una dirección normalizada es válida. |
 | `js/usig.js` | Se comunica con USIG y convierte su respuesta a datos que pueden usar el formulario y el mapa. |
-| `js/usig.js` | Se comunica con USIG y convierte su respuesta a datos que pueden usar el formulario y el mapa. |
 | `css/styles.css` | Define los colores, tamaños y distribución visual de las páginas. |
 | `data/charlas.json` | Guarda los datos de las charlas. |
 | `data/sedes.json` | Guarda los nombres, direcciones y referencias de las sedes. |
 | `README.md` | Explica los requisitos y los pasos para abrir el sitio, con y sin Python. |
 | `Informe.md` | Describe el funcionamiento del proyecto y los servicios externos utilizados. |
 
-## 10. Requisitos de ejecución
+## 10. Criterios de código
+
+El objetivo es que el proyecto sea fácil de entender y mantener. Para eso se tienen en cuenta
+cinco criterios relacionados:
+
+- **Legibilidad:** los nombres y mensajes explican con claridad qué hace cada parte.
+- **Cohesión:** cada archivo se ocupa de una tarea relacionada, como mostrar charlas, gestionar el
+  formulario o dibujar el mapa.
+- **Acoplamiento controlado:** las vistas no conocen los detalles de la API externa ni de cómo se
+  leen los archivos JSON; esos accesos se reúnen en `js/usig.js` y `js/datos.js`.
+- **Separación de responsabilidades:** el HTML define el contenido, el CSS su aspecto y el
+  JavaScript coordina las acciones, las reglas y el acceso a datos.
+- **Errores y validación:** antes de aceptar el formulario se revisan nombre, DNI, teléfono, fecha
+  y dirección. Si una consulta externa falla o no encuentra la dirección, se informa el problema.
+
+Estos criterios ayudan a reducir el esfuerzo necesario para comprender y modificar el proyecto.
+
+## 11. Requisitos de ejecución
 
 - Se necesita un navegador moderno y conexión a internet para el mapa y la búsqueda de direcciones.
 - También se necesita iniciar un servidor local para que el navegador pueda cargar los archivos del proyecto. Python no es obligatorio; se puede usar Live Server o Node.js.
