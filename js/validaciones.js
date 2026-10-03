@@ -38,6 +38,11 @@ function esTelefonoValido(telefono) {
     return telefono.replace(/\D/g, '').length >= 8;
 }
 
+function esNombreValido(nombre) {
+    if (typeof nombre !== 'string') return false;
+    return /^[\p{L} ]+$/u.test(nombre.normalize('NFC').trim());
+}
+
 function esDniValido(dni) {
     return typeof dni === 'string' && /^\d{8,9}$/.test(dni);
 }

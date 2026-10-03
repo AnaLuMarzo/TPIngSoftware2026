@@ -89,6 +89,14 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
     camposTexto.forEach(campo => {
         campo.setCustomValidity(campo.value.trim() ? '' : 'Completá este campo.');
     });
+    const nombre = formulario.elements.nombre;
+    if (nombre) {
+        if (nombre.value && !esNombreValido(nombre.value)) {
+            nombre.setCustomValidity('El nombre y apellido solo puede contener letras y espacios.');
+        } else if (nombre.value.trim()) {
+            nombre.setCustomValidity('');
+        }
+    }
     const dni = formulario.elements.dni;
     if (dni) {
         dni.setCustomValidity(dni.value && !esDniValido(dni.value)
@@ -115,7 +123,7 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
 
     if (!formulario.checkValidity()) {
         if (estado) {
-            estado.textContent = 'Revisá los campos obligatorios, el DNI (8 o 9 números), el teléfono (al menos 8 números), el formato del correo y la fecha de nacimiento (hasta el 31/12/2010).';
+            estado.textContent = 'Revisá el nombre (solo letras y espacios), los campos obligatorios, el DNI (8 o 9 números), el teléfono (al menos 8 números), el formato del correo y la fecha de nacimiento (hasta el 31/12/2010).';
             estado.className = 'form-status error';
         }
         formulario.reportValidity();
