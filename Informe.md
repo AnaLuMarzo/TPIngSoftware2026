@@ -2,29 +2,20 @@
 
 ## 1. Resumen
 
-El prototipo permite consultar charlas de orientación e inscribirse como postulante a autoridad
-de mesa. La página principal presenta tres charlas; el botón **"Ver más charlas"** abre otra
+El prototipo permite consultar charlas de orientación e inscribirse como postulante a autoridad de mesa. La página principal presenta tres charlas; el botón **"Ver más charlas"** abre otra
 página con las 15 actividades y sus datos: tema, fecha, horario, profesor, aula y sede.
 
-Las charlas y las sedes están guardadas en archivos de datos del proyecto. Para mostrar las
-sedes en el mapa, el sistema envía cada dirección al servicio USIG y utiliza la ubicación que
-recibe como respuesta. No se guardan coordenadas anticipadamente. El buscador localiza las sedes
-registradas; si una dirección no es sede, avisa **"No es una Sede"** y no agrega un punto al mapa.
+Las charlas y las sedes están guardadas en archivos de datos del proyecto (.json). Para mostrar las sedes en el mapa, el sistema envía cada dirección al servicio USIG y utiliza la ubicación que recibe como respuesta. No se guardan coordenadas anticipadamente. El buscador localiza las sedes registradas; si una dirección no es sede, avisa **"No es una Sede"** y no agrega un punto al mapa.
 
-Para abrir el prototipo se necesita un navegador actualizado, conexión a internet y un servidor
-local. Python es opcional: también se puede usar VS Code Live Server o Node.js. El archivo
+Para abrir el prototipo se necesita un navegador actualizado, conexión a internet y un servidor local. Python es opcional: también se puede usar VS Code Live Server o Node.js. El archivo
 `README.md` explica cómo iniciar el sitio con cada opción.
 
 ## 2. Alcance de la implementación
 
-- **Visualización de sedes**: el sistema muestra en un mapa interactivo las 15 sedes donde se
-  realizarán las charlas de orientación.
-- **Ubicación de sedes**: cada dirección se envía al servicio USIG cuando se carga el mapa. La
-  aplicación obtiene la ubicación en ese momento; no la trae guardada de antemano.
-- **Búsqueda de sedes**: se puede buscar una dirección; la aplicación consulta USIG y verifica
-  si corresponde a una sede registrada. Solo las sedes existentes se pueden localizar en el mapa.
-- **Consulta de charlas**: la portada presenta tres actividades y `charlas.html` muestra el
-  listado completo de 15 charlas.
+- **Visualización de sedes**: el sistema muestra en un mapa interactivo las 15 sedes donde se realizarán las charlas de orientación.
+- **Ubicación de sedes**: cada dirección se envía al servicio USIG cuando se carga el mapa. La aplicación obtiene la ubicación en ese momento; no la trae guardada de antemano.
+- **Búsqueda de sedes**: se puede buscar una dirección; la aplicación consulta USIG y verifica si corresponde a una sede registrada. Solo las sedes existentes se pueden localizar en el mapa.
+- **Consulta de charlas**: la portada presenta tres actividades y `charlas.html` muestra el listado completo de 15 charlas.
 
 ## 3. Servicios externos utilizados
 
@@ -36,8 +27,7 @@ local. Python es opcional: también se puede usar VS Code Live Server o Node.js.
 
 ## 4. Estructura de datos: `data/sedes.json`
 
-El archivo contiene un **array de 15 sedes** con la información mínima requerida para la
-consulta. **No incluye coordenadas**: la ubicación se obtiene exclusivamente consumiendo la API
+El archivo contiene un **array de 15 sedes** con la información mínima requerida para la consulta. **No incluye coordenadas**: la ubicación se obtiene exclusivamente consumiendo la API
 USIG.
 
 ```json
@@ -82,8 +72,7 @@ GET https://servicios.usig.buenosaires.gob.ar/normalizar/
 | `direccion` | Ej.: `cordoba 1538, caba` | Dirección en formato "calle altura, partido" o "calle y calle, partido" |
 | `geocodificar` | `TRUE` | Solicita las coordenadas geográficas en la respuesta |
 
-La llamada se realiza desde el navegador. La dirección viaja al servicio USIG y la aplicación
-lee la ubicación incluida en su respuesta.
+La llamada se realiza desde el navegador. La dirección viaja al servicio USIG y la aplicación lee la ubicación incluida en su respuesta.
 
 ### 5.2. Estructura de la respuesta (JSON)
 
@@ -116,10 +105,8 @@ Campos clave utilizados por el sistema:
 
 ### 5.3. Manejo de errores
 
-- **Dirección no reconocida**: USIG no devuelve resultados y la página informa que no encontró
-  esa dirección.
-- **Falla de conexión**: el servicio requiere acceso a internet. Si la red bloquea USIG, la
-  búsqueda o la carga del mapa puede no completarse.
+- **Dirección no reconocida**: USIG no devuelve resultados y la página informa que no encontró esa dirección.
+- **Falla de conexión**: el servicio requiere acceso a internet. Si la red bloquea USIG, la búsqueda o la carga del mapa puede no completarse.
 
 ## 6. Visualización en el mapa (Leaflet)
 
@@ -160,8 +147,7 @@ cargarSedes()
         └── L.marker([lat, lng]).addTo(mapa).bindPopup(HTML)
 ```
 
-Después de colocar todos los marcadores, se ejecuta `mapa.fitBounds(bounds.pad(0.2))` para
-encuadrar el mapa en la totalidad de las sedes.
+Después de colocar todos los marcadores, se ejecuta `mapa.fitBounds(bounds.pad(0.2))` para encuadrar el mapa en la totalidad de las sedes.
 
 ### 6.3. Contenido del popup de cada sede
 
@@ -170,24 +156,18 @@ No expone coordenadas técnicas al usuario.
 
 ## 7. Búsqueda de sedes
 
-`main.html` carga la sección de sedes definida en `mapa.html`. Su buscador permite encontrar una
-sede por dirección. `js/mapa.js` envía esa dirección a USIG y compara la respuesta con las sedes
+`main.html` carga la sección de sedes definida en `mapa.html`. Su buscador permite encontrar una sede por dirección. `js/mapa.js` envía esa dirección a USIG y compara la respuesta con las sedes
 cargadas desde `data/sedes.json`.
 
 - Si corresponde a una sede registrada, se centra el mapa y se abre el marcador existente.
-- Si la dirección existe, pero no es una de las sedes, se informa **"No es una Sede"**. No se
-  agrega un marcador nuevo ni se desplaza el mapa.
+- Si la dirección existe, pero no es una de las sedes, se informa **"No es una Sede"**. No se agrega un marcador nuevo ni se desplaza el mapa.
 - Si USIG no reconoce la dirección, se informa que no se encontró.
 
-De este modo, la ubicación se obtiene dinámicamente mediante el servicio externo, pero el mapa
-solo presenta los lugares que fueron definidos como sedes de las charlas.
+De este modo, la ubicación se obtiene dinámicamente mediante el servicio externo, pero el mapa solo presenta los lugares que fueron definidos como sedes de las charlas.
 
 ## 8. Verificación realizada
 
-Durante la verificación se comprobó que la página principal muestra tres charlas y que el enlace
-"Ver más charlas" abre la página con las 15 actividades. También se probó la búsqueda: una
-dirección que coincide con una sede abre su marcador; una dirección que no es sede informa
-"No es una Sede" y no agrega marcadores.
+Durante la verificación se comprobó que la página principal muestra tres charlas y que el enlace "Ver más charlas" abre la página con las 15 actividades. También se probó la búsqueda: una dirección que coincide con una sede abre su marcador; una dirección que no es sede informa "No es una Sede" y no agrega marcadores.
 
 ## 9. Archivos involucrados
 
@@ -211,13 +191,5 @@ dirección que coincide con una sede abre su marcador; una dirección que no es 
 ## 10. Requisitos de ejecución
 
 - Se necesita un navegador moderno y conexión a internet para el mapa y la búsqueda de direcciones.
-- También se necesita iniciar un servidor local para que el navegador pueda cargar los archivos
-  del proyecto. Python no es obligatorio; se puede usar Live Server o Node.js.
+- También se necesita iniciar un servidor local para que el navegador pueda cargar los archivos del proyecto. Python no es obligatorio; se puede usar Live Server o Node.js.
 - `README.md` contiene los pasos detallados para ejecutar el sitio con esas alternativas.
-
-## 11. Posibles mejoras (no requeridas por las pautas)
-
-- Implementar el **alta de charlas/sedes** por parte del administrador (no obligatorio en la 2.ª entrega).
-- Validar las direcciones del formulario de inscripción contra la API de normalización (reutilizando la función `normalizarDireccion`).
-- Utilizar `typeResultado=calle_altura_calle_y_calle` para mejorar el matching de sedes en el conurbano.
-- Agregar `maxOptions` para controlar la cantidad de resultados cuando hay ambigüedad.

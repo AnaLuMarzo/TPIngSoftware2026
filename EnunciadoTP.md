@@ -54,3 +54,4 @@ Prueba de Concepto: La funcionalidad a desarrollar debe abarcar los casos de uso
 relacionados con la inscripción de un voluntario como postulante para ser autoridad de
 mesa, y la consulta de charlas. Se debe incluir la interacción con el correspondiente sistema
 externo de información geográfica para observar las referencias en un mapa. 
+
