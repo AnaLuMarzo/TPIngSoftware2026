@@ -235,21 +235,6 @@ section .subtitle {
     border-radius: 6px;
 }
 
-.form-grid .checkbox-group {
-    margin-top: 0.3rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.form-grid .checkbox-group label {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-weight: normal;
-    margin-top: 0;
-}
-
 .form-submit {
     margin-top: 1.5rem;
     width: 100%;

@@ -33,6 +33,10 @@ function esTelefonoValido(telefono) {
     return telefono.replace(/\D/g, '').length >= 8;
 }
 
+function esDniValido(dni) {
+    return typeof dni === 'string' && /^\d{8,9}$/.test(dni);
+}
+
 function esFechaNacimientoValida(fechaNacimiento) {
     return typeof fechaNacimiento === 'string' &&
         /^\d{4}-\d{2}-\d{2}$/.test(fechaNacimiento) &&

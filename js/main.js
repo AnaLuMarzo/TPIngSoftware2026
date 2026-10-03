@@ -3,7 +3,7 @@ async function cargarSeccion(contenedorId, rutaHtml, rutaScript, seccionId) {
     if (!contenedor) return;
 
     try {
-        const respuesta = await fetch(rutaHtml);
+        const respuesta = await fetch(rutaHtml, { cache: 'no-cache' });
         if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
         contenedor.innerHTML = await respuesta.text();
 

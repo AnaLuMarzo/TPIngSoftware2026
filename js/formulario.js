@@ -93,6 +93,12 @@ if (formulario) formulario.addEventListener('submit', (evento) => {
     camposTexto.forEach(campo => {
         campo.setCustomValidity(campo.value.trim() ? '' : 'Completá este campo.');
     });
+    const dni = formulario.elements.dni;
+    if (dni) {
+        dni.setCustomValidity(dni.value && !esDniValido(dni.value)
+            ? 'El DNI debe tener solo números y entre 8 y 9 dígitos.'
+            : '');
+    }
     const fechaNacimiento = formulario.elements.fecha_nacimiento;
     if (fechaNacimiento) {
         fechaNacimiento.setCustomValidity(fechaNacimiento.value && !esFechaNacimientoValida(fechaNacimiento.value)
@@ -113,7 +119,7 @@ if (formulario) formulario.addEventListener('submit', (evento) => {
 
     if (!formulario.checkValidity()) {
         if (estado) {
-            estado.textContent = 'Revisá los campos obligatorios, que el teléfono tenga al menos 8 números, el formato del correo y la fecha de nacimiento (hasta el 31/12/2010).';
+            estado.textContent = 'Revisá los campos obligatorios, el DNI (8 o 9 números), el teléfono (al menos 8 números), el formato del correo y la fecha de nacimiento (hasta el 31/12/2010).';
             estado.className = 'form-status error';
         }
         formulario.reportValidity();
