@@ -1,6 +1,3 @@
-const URL_CHARLAS = 'data/charlas.json';
-const URL_SEDES_CHARLAS = 'data/sedes.json';
-
 function crearDatoCharla(texto) {
     const dato = document.createElement('p');
     dato.className = 'meta';
@@ -63,18 +60,7 @@ async function cargarCharlas() {
     if (!contenedor) return;
 
     try {
-        const [respuestaCharlas, respuestaSedes] = await Promise.all([
-            fetch(URL_CHARLAS),
-            fetch(URL_SEDES_CHARLAS)
-        ]);
-        if (!respuestaCharlas.ok || !respuestaSedes.ok) {
-            throw new Error('No se pudieron cargar los datos de charlas y sedes.');
-        }
-
-        const [charlas, sedes] = await Promise.all([
-            respuestaCharlas.json(),
-            respuestaSedes.json()
-        ]);
+        const [charlas, sedes] = await Promise.all([obtenerCharlas(), obtenerSedes()]);
         if (!Array.isArray(charlas) || !Array.isArray(sedes)) {
             throw new Error('Los archivos de datos no contienen listas válidas.');
         }

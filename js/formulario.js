@@ -1,4 +1,3 @@
-const URL_CHARLAS_CIERRE = 'data/charlas.json';
 const formulario = document.getElementById('form-inscripcion');
 let fechaHoraCierreInscripciones = null;
 let textoCierreInscripciones = '';
@@ -37,10 +36,7 @@ async function cargarCierreInscripciones() {
     const avisoCierre = document.getElementById('fecha-cierre-inscripcion');
 
     try {
-        const respuesta = await fetch(URL_CHARLAS_CIERRE);
-        if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
-
-        const charlas = await respuesta.json();
+        const charlas = await obtenerCharlas();
         if (!Array.isArray(charlas)) throw new Error('La lista de charlas no es válida.');
 
         fechaHoraCierreInscripciones = obtenerFechaHoraLimiteInscripcion(charlas);

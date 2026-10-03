@@ -1,5 +1,3 @@
-const URL_SEDES = 'data/sedes.json';
-
 const elementoMapa = document.getElementById('mapa');
 let mapa = null;
 if (elementoMapa && window.L) {
@@ -37,12 +35,10 @@ async function cargarSedes() {
 
     let sedes;
     try {
-        const respuesta = await fetch(URL_SEDES);
-        if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
-        sedes = await respuesta.json();
+        sedes = await obtenerSedes();
         if (!Array.isArray(sedes)) throw new Error('El archivo de sedes no contiene una lista válida.');
     } catch (error) {
-        console.error('No se pudo cargar', URL_SEDES, error);
+        console.error('No se pudo cargar la lista de sedes:', error);
         if (estado) estado.textContent = 'No se pudo cargar la lista de sedes. Verificá la conexión e intentá nuevamente.';
         return;
     }

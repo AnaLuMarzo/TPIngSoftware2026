@@ -178,10 +178,12 @@ Durante la verificación se comprobó que la página principal muestra tres char
 | `formulario.html` | Contenido visual del formulario de inscripción. |
 | `mapa.html` | Contenido visual de la sección del mapa y su buscador. |
 | `js/main.js` | Carga el formulario y el mapa dentro de la página de inicio. |
+| `js/datos.js` | Lee los archivos JSON de charlas y sedes para que los usen las distintas partes del sitio. |
 | `js/charlas.js` | Lee los archivos de datos y arma las tarjetas con la información de cada charla. |
 | `js/formulario.js` | Muestra la fecha de cierre, revisa los campos y solicita validar la dirección antes de aceptar el formulario. |
 | `js/mapa.js` | Muestra las sedes y usa el buscador de direcciones para enfocar sus marcadores. |
 | `js/validaciones.js` | Reúne las reglas del formulario y decide si una dirección normalizada es válida. |
+| `js/usig.js` | Se comunica con USIG y convierte su respuesta a datos que pueden usar el formulario y el mapa. |
 | `js/usig.js` | Se comunica con USIG y convierte su respuesta a datos que pueden usar el formulario y el mapa. |
 | `css/styles.css` | Define los colores, tamaños y distribución visual de las páginas. |
 | `data/charlas.json` | Guarda los datos de las charlas. |
