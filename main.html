@@ -121,28 +121,9 @@
         </form>
     </section>
 
-    <!-- ===== Sedes / Mapa ===== -->
-    <section id="sedes">
-        <h2>Sedes de las charlas</h2>
-        <p class="subtitle">
-            Ubicación de los lugares donde se realizarán las charlas.
-            Puede buscar cualquier dirección para verla en el mapa.
-        </p>
-
-        <div class="buscador-sede" role="search">
-            <label for="input-buscar-sede">🔍 Buscar una sede por su dirección</label>
-            <div class="buscador-sede__row">
-                <input type="search" id="input-buscar-sede"
-                       placeholder="Ej: cordoba 1538, caba"
-                       autocomplete="off">
-                <button id="btn-buscar-sede" type="button" class="btn btn-accent">Buscar</button>
-            </div>
-            <p id="info-buscar-sede" aria-live="polite"></p>
-        </div>
-
-        <div id="mapa"></div>
-        <p id="info-sedes" class="map-status" role="status" aria-live="polite"></p>
-    </section>
+    <div id="contenedor-mapa">
+        <p role="status" aria-live="polite">Cargando mapa...</p>
+    </div>
 
     <!-- ===== Footer ===== -->
     <footer>
