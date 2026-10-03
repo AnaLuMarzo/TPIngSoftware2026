@@ -181,7 +181,8 @@ Durante la verificación se comprobó que la página principal muestra tres char
 | `js/charlas.js` | Lee los archivos de datos y arma las tarjetas con la información de cada charla. |
 | `js/formulario.js` | Muestra la fecha de cierre, revisa los campos y solicita validar la dirección antes de aceptar el formulario. |
 | `js/mapa.js` | Muestra las sedes y usa el buscador de direcciones para enfocar sus marcadores. |
-| `js/validaciones.js` | Reúne las reglas del formulario y la función compartida que consulta USIG para normalizar direcciones. |
+| `js/validaciones.js` | Reúne las reglas del formulario y decide si una dirección normalizada es válida. |
+| `js/usig.js` | Se comunica con USIG y convierte su respuesta a datos que pueden usar el formulario y el mapa. |
 | `css/styles.css` | Define los colores, tamaños y distribución visual de las páginas. |
 | `data/charlas.json` | Guarda los datos de las charlas. |
 | `data/sedes.json` | Guarda los nombres, direcciones y referencias de las sedes. |

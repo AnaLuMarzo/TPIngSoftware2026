@@ -11,7 +11,7 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 |----------|-------------------|-----|
 | HTML5 | Estándar del navegador (no se instala) | Estructura de `main.html`, `charlas.html` y los fragmentos `formulario.html` y `mapa.html` |
 | CSS3 | Estándar del navegador (no se instala) | Estilos y maquetación (`css/styles.css`) |
-| JavaScript (ES2015+) | ES2015 o posterior | Carga de secciones (`js/main.js`), formulario (`js/formulario.js`), mapa (`js/mapa.js`), charlas (`js/charlas.js`) y validaciones compartidas (`js/validaciones.js`) |
+| JavaScript (ES2015+) | ES2015 o posterior | Carga de secciones (`js/main.js`), formulario (`js/formulario.js`), mapa (`js/mapa.js`), charlas (`js/charlas.js`), validaciones (`js/validaciones.js`) y conexión con USIG (`js/usig.js`) |
 
 ### Librerías externas
 
