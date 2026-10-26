@@ -11,7 +11,7 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 |----------|-------------------|-----|
 | HTML5 | Estándar del navegador (no se instala) | Estructura de `main.html`, `charlas.html` y los fragmentos `formulario.html` y `mapa.html` |
 | CSS3 | Estándar del navegador (no se instala) | Estilos y maquetación (`css/styles.css`) |
-| JavaScript (ES2015+) | ES2015 o posterior | Carga de secciones (`js/main.js`), datos JSON (`js/datos.js`), formulario (`js/formulario.js`), mapa (`js/mapa.js`), charlas (`js/charlas.js`), validaciones (`js/validaciones.js`) y conexión con USIG (`js/usig.js`) |
+| JavaScript (ES2015+) | ES2015 o posterior | Carga de secciones (`js/main.js`), acceso a datos JSON (`js/datos.js`), formulario e inscripción (`js/formulario.js`), mapa interactivo (`js/mapa.js`), listado de charlas (`js/charlas.js`), reglas de validación (`js/validaciones.js`) y comunicación con API externa (`js/usig.js`) |
 
 ### Librerías externas
 
@@ -30,13 +30,15 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 > - Cargar Leaflet y los tiles de OpenStreetMap desde CDN.
 > - Consumir la API de normalización de direcciones de USIG para geocodificar cada sede.
 
-#### Datos, charlas y mapa
+#### Datos, charlas, sedes y postulantes
 
 - `data/charlas.json` contiene las charlas precargadas; cada charla identifica su sede por nombre.
-- `data/sedes.json` contiene nombres y direcciones, sin coordenadas.
+- `data/sedes.json` contiene los datos de las sedes (nombre, dirección, referencia).
+- `data/postulantes.json` almacena los postulantes registrados (array vacío inicial).
 - Al cargar el mapa, la aplicación envía cada dirección a USIG y utiliza la respuesta para colocar los marcadores con Leaflet.
-- El buscador del mapa comprueba si una dirección corresponde a una sede registrada. Si lo es,centra el mapa en esa sede; si no, informa **"No es una Sede"** y no agrega un marcador.
+- El buscador del mapa comprueba si una dirección corresponde a una sede registrada. Si lo es, centra el mapa en esa sede; si no, informa **"No es una Sede"** y no agrega un marcador.
 - La portada muestra tres charlas y el enlace **"Ver más charlas"** abre `charlas.html`, donde se muestra el listado completo. Ambas vistas obtienen la información desde los archivos JSON.
+- El período de inscripción se determina automáticamente a partir de las charlas: se abre con la primera charla y cierra con la última.
 
 ### Herramientas recomendadas
 
@@ -57,27 +59,21 @@ El código se entrega en un archivo `.zip`. Seguir estos pasos:
    ```
 4. Abrir una terminal en la carpeta del proyecto e iniciar el servidor local:
    ```bash
-   python -m http.server 8080
+   python servidor.py 8080
    ```
-5. Abrir `http://localhost:8080/main.html` en el navegador. No abrir el archivo con doble clic, porque el navegador podría bloquear la lectura de los JSON.
+5. Abrir `http://localhost:8080/main.html` en el navegador. No abrir el archivo con doble clic, porque el navegador podría bloquear la lectura de los JSON y el envío de inscripciones.
+
+> El proyecto incluye `servidor.py`, un servidor Python personalizado que sirve los archivos estáticos y acepta las inscripciones de postulantes (`POST /api/postulantes`). Este servidor es necesario porque el formulario guarda los datos en `data/postulantes.json`, lo cual requiere un backend.
 
 Si no tiene Python instalado, puede usar cualquiera de estas alternativas desde la carpeta del proyecto ya descomprimida:
 
 #### Opción A: Visual Studio Code y Live Server
 
-1. Abrir la carpeta del proyecto en Visual Studio Code.
-2. Instalar la extensión **Live Server** si todavía no está instalada.
-3. Abrir `main.html` y seleccionar **Go Live** en la barra inferior, o hacer clic derecho sobre el archivo y elegir **Open with Live Server**.
-4. Se abrirá el sitio en una dirección local, normalmente `http://127.0.0.1:5500/main.html`.
+⚠️ **Importante:** Live Server y Node.js `http-server` **no sirven** para este proyecto porque no manejan el endpoint `POST /api/postulantes` necesario para guardar inscripciones. Se requiere usar `servidor.py`.
 
-#### Opción B: Node.js
+#### Opción B: Node.js con express
 
-1. Instalar Node.js, que incluye npm, si todavía no está instalado.
-2. Abrir una terminal en la carpeta del proyecto y ejecutar:
-  ```bash
-  npx --yes http-server -p 8080
-  ```
-3. Abrir `http://localhost:8080/main.html` en el navegador.
+Si tenés Node.js instalado, podés usar un servidor Express que sirva archivos estáticos y acepte POSTs. Sin embargo, la opción recomendada sigue siendo `servidor.py`.
 
 La dirección local funciona únicamente en la computadora donde se inició el servidor. Cada persona
 que reciba el ZIP debe iniciar su propio servidor. No se debe abrir `main.html` con doble clic,

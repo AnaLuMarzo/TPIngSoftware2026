@@ -200,9 +200,52 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
         }
     }
 
-    if (estado) {
-        estado.textContent = 'Los datos son válidos. Esta demostración no envía ni guarda la inscripción.';
-        estado.className = 'form-status success';
+    // Construir objeto del postulante
+    const postulante = {
+        nombre: formulario.elements.nombre.value.trim(),
+        dni: formulario.elements.dni.value.trim(),
+        fecha_nacimiento: formulario.elements.fecha_nacimiento.value,
+        direccion: formulario.elements.direccion.value.trim(),
+        telefono: formulario.elements.telefono.value.trim(),
+        email: formulario.elements.email.value.trim(),
+        distrito: formulario.elements.distrito.value,
+        experiencia: formulario.elements.experiencia.value,
+        capacitacion: formulario.elements.capacitacion.value,
+        afiliado: formulario.elements.afiliado.value,
+        partido: formulario.elements.partido?.value.trim() || ''
+    };
+
+    botonEnviarInscripcion.disabled = true;
+    if (estado) estado.textContent = 'Enviando inscripción...';
+
+    try {
+        const respuesta = await fetch('/api/postulantes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(postulante)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(resultado.error || 'Error al guardar la inscripción.');
+        }
+
+        if (estado) {
+            estado.textContent = `¡Inscripción registrada! Tu DNI ${postulante.dni} fue guardado correctamente.`;
+            estado.className = 'form-status success';
+        }
+        formulario.reset();
+
+    } catch (error) {
+        console.error('Error al enviar inscripción:', error);
+        if (estado) {
+            estado.textContent = error.message || 'No se pudo conectar con el servidor. Intentá nuevamente más tarde.';
+            estado.className = 'form-status error';
+        }
+    } finally {
+        if (estaInscripcionAbierta(periodoInscripcion)) {
+            botonEnviarInscripcion.disabled = false;
+        }
     }
-    formulario.reset();
 });
