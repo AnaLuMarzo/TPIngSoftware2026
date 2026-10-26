@@ -10,27 +10,37 @@ function esSedeValida(sede) {
     return true;
 }
 
-function obtenerFechaHoraLimiteInscripcion(charlas) {
-    if (!Array.isArray(charlas)) return null;
+function obtenerPeriodoInscripcion(charlas) {
+    if (!Array.isArray(charlas) || charlas.length === 0) return { apertura: null, cierre: null };
 
-    let fechaHoraLimite = null;
+    let fechaApertura = null;
+    let fechaCierre = null;
+
     for (const charla of charlas) {
         if (!charla || typeof charla.Fecha !== 'string' || typeof charla.Horario !== 'string' ||
             !/^\d{4}-\d{2}-\d{2}$/.test(charla.Fecha) ||
             !/^([01]\d|2[0-3]):[0-5]\d$/.test(charla.Horario)) continue;
 
         const fechaHora = `${charla.Fecha}T${charla.Horario}:00`;
-        if (Number.isNaN(new Date(fechaHora).getTime())) continue;
-        if (!fechaHoraLimite || fechaHora > fechaHoraLimite) fechaHoraLimite = fechaHora;
+        const date = new Date(fechaHora);
+        if (Number.isNaN(date.getTime())) continue;
+
+        if (!fechaApertura || fechaHora < fechaApertura) fechaApertura = fechaHora;
+        if (!fechaCierre || fechaHora > fechaCierre) fechaCierre = fechaHora;
     }
 
-    return fechaHoraLimite ? new Date(fechaHoraLimite) : null;
+    return {
+        apertura: fechaApertura ? new Date(fechaApertura) : null,
+        cierre: fechaCierre ? new Date(fechaCierre) : null
+    };
 }
 
-function estaInscripcionAbierta(fechaHoraLimite) {
-    return fechaHoraLimite instanceof Date &&
-        !Number.isNaN(fechaHoraLimite.getTime()) &&
-        Date.now() < fechaHoraLimite.getTime();
+function estaInscripcionAbierta(periodo) {
+    if (!periodo || !(periodo.apertura instanceof Date) || !(periodo.cierre instanceof Date)) return false;
+    if (Number.isNaN(periodo.apertura.getTime()) || Number.isNaN(periodo.cierre.getTime())) return false;
+
+    const ahora = Date.now();
+    return ahora >= periodo.apertura.getTime() && ahora < periodo.cierre.getTime();
 }
 
 function esTelefonoValido(telefono) {
