@@ -2,12 +2,25 @@
   {
     "nombre": "ana",
     "dni": "43567875",
-    "fecha_nacimiento": "1984-02-01",
-    "direccion": "sourdeaux 2531",
+    "fecha_nacimiento": "1998-02-01",
+    "direccion": "rio bamba 2891",
     "telefono": "1543458767",
     "email": "alm@gmail.com",
     "distrito": "d1",
     "experiencia": "no",
+    "capacitacion": "si",
+    "afiliado": "no",
+    "partido": ""
+  },
+  {
+    "nombre": "lau",
+    "dni": "10232673",
+    "fecha_nacimiento": "1970-12-10",
+    "direccion": "av general paz 2543",
+    "telefono": "1153462890",
+    "email": "jmmjnj@gmail.com",
+    "distrito": "d1",
+    "experiencia": "si",
     "capacitacion": "si",
     "afiliado": "no",
     "partido": ""
