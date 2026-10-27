@@ -166,9 +166,48 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
         }
     }
 
-    if (estado) {
-        estado.textContent = 'Los datos son válidos. Esta demostración no envía ni guarda la inscripción.';
-        estado.className = 'form-status success';
+    botonEnviarInscripcion.disabled = true;
+    if (estado) estado.textContent = 'Guardando la inscripción...';
+
+    try {
+        const datos = Object.fromEntries(new FormData(formulario).entries());
+        let respuesta;
+        try {
+            respuesta = await fetch('/api/postulantes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+        } catch {
+            throw new Error('No se pudo conectar con el servidor de inscripciones. Iniciá la aplicación con "node server.js" y abrí http://127.0.0.1:8080/main.html.');
+        }
+
+        if (!respuesta.headers.get('content-type')?.includes('application/json')) {
+            throw new Error('El servidor no admite guardar inscripciones. Iniciá la aplicación con "node server.js" y abrí http://127.0.0.1:8080/main.html (no uses Live Server).');
+        }
+
+        let resultado;
+        try {
+            resultado = await respuesta.json();
+        } catch {
+            throw new Error('El servidor devolvió una respuesta inválida. Verificá que esté iniciado con "node server.js".');
+        }
+        if (!respuesta.ok) throw new Error(resultado.error || 'No se pudo guardar la inscripción.');
+
+        if (estado) {
+            estado.textContent = 'La inscripción se guardó correctamente.';
+            estado.className = 'form-status success';
+        }
+        formulario.reset();
+    } catch (error) {
+        console.error('No se pudo guardar la inscripción:', error);
+        if (estado) {
+            estado.textContent = error.message || 'No se pudo guardar la inscripción. Intentá nuevamente.';
+            estado.className = 'form-status error';
+        }
+    } finally {
+        if (estaInscripcionAbierta(fechaHoraCierreInscripciones)) {
+            botonEnviarInscripcion.disabled = false;
+        }
     }
-    formulario.reset();
 });

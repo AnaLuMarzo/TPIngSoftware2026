@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "nombre": "ana",
+    "dni": "43567875",
+    "fecha_nacimiento": "1984-02-01",
+    "direccion": "sourdeaux 2531",
+    "telefono": "1543458767",
+    "email": "alm@gmail.com",
+    "distrito": "d1",
+    "experiencia": "no",
+    "capacitacion": "si",
+    "afiliado": "no",
+    "partido": ""
+  }
+]
