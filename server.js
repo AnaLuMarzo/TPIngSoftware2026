@@ -4,6 +4,7 @@ const path = require('path');
 
 const ROOT = __dirname;
 const POSTULANTES_PATH = path.join(ROOT, 'data', 'postulantes.json');
+const CHARLAS_PATH = path.join(ROOT, 'data', 'charlas.json');
 const PORT = Number(process.env.PORT) || 8080;
 const HOST = '127.0.0.1';
 const MAX_BODY_BYTES = 1024 * 1024;
@@ -26,6 +27,48 @@ class HttpError extends Error {
 function enviarJSON(respuesta, estado, contenido) {
     respuesta.writeHead(estado, { 'Content-Type': 'application/json; charset=utf-8' });
     respuesta.end(JSON.stringify(contenido));
+}
+
+function obtenerFechaHoraCharla(charla) {
+    if (!charla || typeof charla.Fecha !== 'string' || typeof charla.Horario !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(charla.Fecha) ||
+        !/^([01]\d|2[0-3]):[0-5]\d$/.test(charla.Horario)) return null;
+
+    const [anio, mes, dia] = charla.Fecha.split('-').map(Number);
+    const [hora, minuto] = charla.Horario.split(':').map(Number);
+    const fechaHora = new Date(anio, mes - 1, dia, hora, minuto);
+    if (fechaHora.getFullYear() !== anio || fechaHora.getMonth() !== mes - 1 ||
+        fechaHora.getDate() !== dia || fechaHora.getHours() !== hora ||
+        fechaHora.getMinutes() !== minuto) return null;
+
+    return fechaHora;
+}
+
+async function validarPeriodoInscripcion() {
+    const charlas = JSON.parse(await fs.readFile(CHARLAS_PATH, 'utf8'));
+    if (!Array.isArray(charlas)) {
+        throw new Error('charlas.json debe contener una lista JSON.');
+    }
+
+    let apertura = null;
+    let cierre = null;
+    for (const charla of charlas) {
+        const fechaHora = obtenerFechaHoraCharla(charla);
+        if (!fechaHora) continue;
+        if (!apertura || fechaHora < apertura) apertura = fechaHora;
+        if (!cierre || fechaHora > cierre) cierre = fechaHora;
+    }
+    if (!apertura || !cierre) {
+        throw new HttpError(503, 'No se pudo determinar el período de inscripción.');
+    }
+
+    const ahora = Date.now();
+    if (ahora < apertura.getTime()) {
+        throw new HttpError(403, 'La convocatoria todavía no abrió.');
+    }
+    if (ahora >= cierre.getTime()) {
+        throw new HttpError(403, 'El período de inscripción ya cerró.');
+    }
 }
 
 async function leerJSON(request) {
@@ -92,6 +135,8 @@ function validarPostulante(datos) {
 
 function guardarPostulante(postulante) {
     const operacion = writeQueue.then(async () => {
+        await validarPeriodoInscripcion();
+
         let postulantes;
         try {
             postulantes = JSON.parse(await fs.readFile(POSTULANTES_PATH, 'utf8'));

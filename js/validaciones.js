@@ -10,27 +10,39 @@ function esSedeValida(sede) {
     return true;
 }
 
-function obtenerFechaHoraLimiteInscripcion(charlas) {
+function obtenerPeriodoInscripcion(charlas) {
     if (!Array.isArray(charlas)) return null;
 
-    let fechaHoraLimite = null;
+    let apertura = null;
+    let cierre = null;
     for (const charla of charlas) {
         if (!charla || typeof charla.Fecha !== 'string' || typeof charla.Horario !== 'string' ||
             !/^\d{4}-\d{2}-\d{2}$/.test(charla.Fecha) ||
             !/^([01]\d|2[0-3]):[0-5]\d$/.test(charla.Horario)) continue;
 
-        const fechaHora = `${charla.Fecha}T${charla.Horario}:00`;
-        if (Number.isNaN(new Date(fechaHora).getTime())) continue;
-        if (!fechaHoraLimite || fechaHora > fechaHoraLimite) fechaHoraLimite = fechaHora;
+        const [anio, mes, dia] = charla.Fecha.split('-').map(Number);
+        const [hora, minuto] = charla.Horario.split(':').map(Number);
+        const fechaHora = new Date(anio, mes - 1, dia, hora, minuto);
+        if (fechaHora.getFullYear() !== anio || fechaHora.getMonth() !== mes - 1 ||
+            fechaHora.getDate() !== dia || fechaHora.getHours() !== hora ||
+            fechaHora.getMinutes() !== minuto) continue;
+
+        if (!apertura || fechaHora < apertura) apertura = fechaHora;
+        if (!cierre || fechaHora > cierre) cierre = fechaHora;
     }
 
-    return fechaHoraLimite ? new Date(fechaHoraLimite) : null;
+    return apertura && cierre ? { apertura, cierre } : null;
 }
 
-function estaInscripcionAbierta(fechaHoraLimite) {
-    return fechaHoraLimite instanceof Date &&
-        !Number.isNaN(fechaHoraLimite.getTime()) &&
-        Date.now() < fechaHoraLimite.getTime();
+function estaInscripcionAbierta(periodo) {
+    const ahora = Date.now();
+    return periodo &&
+        periodo.apertura instanceof Date &&
+        periodo.cierre instanceof Date &&
+        !Number.isNaN(periodo.apertura.getTime()) &&
+        !Number.isNaN(periodo.cierre.getTime()) &&
+        ahora >= periodo.apertura.getTime() &&
+        ahora < periodo.cierre.getTime();
 }
 
 function esTelefonoValido(telefono) {

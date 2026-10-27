@@ -35,7 +35,7 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 
 - `data/charlas.json` contiene las charlas precargadas; cada charla identifica su sede por nombre.
 - `data/sedes.json` contiene nombres y direcciones, sin coordenadas.
-- `data/postulantes.json` almacena las inscripciones aceptadas por el formulario.
+- `data/postulantes.json` almacena las inscripciones aceptadas por el formulario; el período comienza en la fecha y hora de la primera charla y cierra en la fecha y hora de la última.
 - Al cargar el mapa, la aplicación envía cada dirección a USIG y utiliza la respuesta para colocar los marcadores con Leaflet.
 - El buscador del mapa comprueba si una dirección corresponde a una sede registrada. Si lo es,centra el mapa en esa sede; si no, informa **"No es una Sede"** y no agrega un marcador.
 - La portada muestra tres charlas y el enlace **"Ver más charlas"** abre `charlas.html`, donde se muestra el listado completo. Ambas vistas obtienen la información desde los archivos JSON.
@@ -73,4 +73,3 @@ que reciba el ZIP debe iniciar su propio servidor.
 > internet para Leaflet, OpenStreetMap y USIG.
 
 ---
-

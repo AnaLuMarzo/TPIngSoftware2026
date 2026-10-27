@@ -23,5 +23,5 @@ async function cargarSeccion(contenedorId, rutaHtml, rutaScript, seccionId) {
     }
 }
 
-cargarSeccion('contenedor-formulario', 'formulario.html', 'js/formulario.js', 'inscripcion');
+cargarSeccion('contenedor-formulario', 'formulario.html', 'js/formulario.js?v=4', 'inscripcion');
 cargarSeccion('contenedor-mapa', 'mapa.html', 'js/mapa.js', 'sedes');
