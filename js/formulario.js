@@ -249,7 +249,7 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
     }
 
     if (estado) {
-        estado.textContent = 'Inscripción guardada en este navegador. Podés descargar los registros como postulantes.json.';
+        estado.textContent = 'La inscripción fue enviada correctamente.';
         estado.className = 'form-status success';
     }
     formulario.reset();
