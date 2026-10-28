@@ -47,7 +47,7 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 | Navegador web moderno | Última versión (Chrome, Firefox, Edge, Safari) | Ejecutar y visualizar la aplicación |
 | Node.js | 14 o posterior | Servir la aplicación y guardar las inscripciones |
 
-### Cómo ejecutar el proyecto
+### COMO EJECUTAR EL PROYECTO:
 
 El código se entrega en un archivo `.zip`. Seguir estos pasos:
 
