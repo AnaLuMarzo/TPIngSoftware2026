@@ -21,15 +21,15 @@ Para abrir el prototipo se necesita un navegador actualizado, conexión a intern
 
 El usuario entra a la página de inicio y puede consultar las charlas destacadas o abrir el listado
 completo. Desde cada charla puede ir al mapa y ver la sede correspondiente. También puede completar
-el formulario de inscripción, que valida los datos y comprueba la dirección, pero no guarda ni envía
-la postulación porque el prototipo no tiene un servidor de inscripciones.
+el formulario de inscripción, que valida los datos, comprueba la dirección y guarda cada postulación
+en el `localStorage` del navegador. El formulario permite descargar los registros como `postulantes.json`.
 
 | Caso de uso | Estado | Flujo actual |
 |-------------|--------|--------------|
 | Consultar información de charlas | Implementado | `main.html` muestra tres charlas y `charlas.html` permite consultar el listado completo. |
 | Mostrar mapa | Implementado | El mapa muestra las sedes; desde cada charla del listado completo, el botón **“Ver sede en el mapa”** centra el mapa en su ubicación y abre el marcador. |
 | Modificar información de charla | No implementado | No hay una pantalla para editar charlas. Los datos solo se cambian modificando manualmente el archivo JSON. |
-| Registrarse como postulante | Implementado | El formulario valida los datos y la dirección, y confirma que son válidos (No registra ni persiste la postulación). |
+| Registrarse como postulante | Implementado | El formulario valida y guarda la postulación en el `localStorage` del navegador. Se pueden exportar los registros como `postulantes.json`; el archivo debe moverse manualmente a `data/` si se quiere incluir en el proyecto. |
 
 ## 3. Servicios externos utilizados
 

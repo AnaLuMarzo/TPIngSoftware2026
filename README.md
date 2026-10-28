@@ -38,6 +38,12 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 - El buscador del mapa comprueba si una dirección corresponde a una sede registrada. Si lo es,centra el mapa en esa sede; si no, informa **"No es una Sede"** y no agrega un marcador.
 - La portada muestra tres charlas y el enlace **"Ver más charlas"** abre `charlas.html`, donde se muestra el listado completo. Ambas vistas obtienen la información desde los archivos JSON.
 
+#### Inscripción de postulantes
+
+- Al completar correctamente el formulario, la inscripción se guarda en el `localStorage` del navegador bajo la clave `postulantes`. Los datos quedan en ese navegador y computadora; no se envían a un servidor ni se comparten automáticamente con otros postulantes.
+- El botón **"Descargar postulantes.json"** exporta todas las inscripciones guardadas. Si necesitás incorporar el archivo al proyecto, movelo manualmente a la carpeta `data/`.
+- Por seguridad, una página web no puede escribir directamente dentro de `data/postulantes.json`. El archivo descargado es una copia de los registros almacenados en ese navegador. Si se borran los datos del navegador, se pierde esa copia local; descargá el JSON para conservarla.
+
 ### Herramientas recomendadas
 
 | Herramienta | Versión requerida | Uso |
@@ -88,7 +94,6 @@ porque el navegador puede bloquear la carga de archivos JSON y de las secciones 
 > usa la opción de Node.js.
 
 ---
-
 
 
 

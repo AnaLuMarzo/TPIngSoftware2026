@@ -1,15 +1,67 @@
 const formulario = document.getElementById('form-inscripcion');
+const CLAVE_POSTULANTES = 'postulantes';
 let periodoInscripcion = { apertura: null, cierre: null };
 let textoAperturaInscripciones = '';
 let textoCierreInscripciones = '';
 const botonEnviarInscripcion = formulario?.querySelector('button[type="submit"]');
+const botonDescargarPostulantes = document.getElementById('descargar-postulantes');
+
+function obtenerPostulantesGuardados() {
+    const datosGuardados = localStorage.getItem(CLAVE_POSTULANTES);
+    if (!datosGuardados) return [];
+
+    const postulantes = JSON.parse(datosGuardados);
+    if (!Array.isArray(postulantes)) {
+        throw new Error('El almacenamiento de postulantes no tiene el formato esperado.');
+    }
+    return postulantes;
+}
+
+function descargarPostulantes() {
+    const estado = document.getElementById('estado-inscripcion');
+
+    try {
+        const postulantes = obtenerPostulantesGuardados();
+        if (postulantes.length === 0) {
+            if (estado) {
+                estado.textContent = 'Todavía no hay inscripciones guardadas para descargar.';
+                estado.className = 'form-status error';
+            }
+            return;
+        }
+
+        const archivo = new Blob([JSON.stringify(postulantes, null, 2)], {
+            type: 'application/json'
+        });
+        const url = URL.createObjectURL(archivo);
+        const enlace = document.createElement('a');
+        enlace.href = url;
+        enlace.download = 'postulantes.json';
+        document.body.append(enlace);
+        enlace.click();
+        enlace.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 0);
+
+        if (estado) {
+            estado.textContent = 'Se descargó postulantes.json. Si necesitás incluirlo en el proyecto, guardalo en la carpeta data/.';
+            estado.className = 'form-status success';
+        }
+    } catch (error) {
+        console.error('No se pudieron descargar las inscripciones:', error);
+        if (estado) {
+            estado.textContent = 'No se pudieron descargar las inscripciones. Revisá que el almacenamiento del navegador esté disponible.';
+            estado.className = 'form-status error';
+        }
+    }
+}
 
 if (botonEnviarInscripcion) botonEnviarInscripcion.disabled = true;
+if (botonDescargarPostulantes) botonDescargarPostulantes.addEventListener('click', descargarPostulantes);
 
 function cerrarInscripciones(motivo) {
     if (!formulario) return;
 
-    formulario.querySelectorAll('input, select, button').forEach(control => {
+    formulario.querySelectorAll('input, select, button[type="submit"]').forEach(control => {
         control.disabled = true;
     });
 
@@ -171,8 +223,26 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
         }
     }
 
+    try {
+        const postulante = Object.fromEntries(
+            Array.from(new FormData(formulario).entries(), ([campo, valor]) => [campo, String(valor).trim()])
+        );
+        postulante.fecha_inscripcion = new Date().toISOString();
+
+        const postulantes = obtenerPostulantesGuardados();
+        postulantes.push(postulante);
+        localStorage.setItem(CLAVE_POSTULANTES, JSON.stringify(postulantes));
+    } catch (error) {
+        console.error('No se pudo guardar la inscripción:', error);
+        if (estado) {
+            estado.textContent = 'No se pudo guardar la inscripción. El almacenamiento local puede estar deshabilitado, lleno o contener datos inválidos.';
+            estado.className = 'form-status error';
+        }
+        return;
+    }
+
     if (estado) {
-        estado.textContent = 'Los datos son válidos. Esta demostración no envía ni guarda la inscripción.';
+        estado.textContent = 'Inscripción guardada en este navegador. Podés descargar los registros como postulantes.json.';
         estado.className = 'form-status success';
     }
     formulario.reset();
