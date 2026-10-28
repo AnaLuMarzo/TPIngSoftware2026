@@ -1,6 +1,9 @@
-async function esDireccionValida(direccion) {
+function esDireccionValida(direccion) {
     if (typeof direccion !== 'string' || !direccion.trim()) return false;
-    return Boolean(await normalizarDireccion(direccion));
+    // Validación local: debe tener al menos una palabra (calle) y un número
+    // Ejemplos válidos: "Av Corrientes 1234", "Sourdeaux 2531", "Bolívar 63"
+    const patron = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+\s+\d{1,5}$/;
+    return patron.test(direccion.trim());
 }
 
 function esSedeValida(sede) {

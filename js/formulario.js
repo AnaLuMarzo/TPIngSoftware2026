@@ -160,43 +160,14 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
 
     const direccion = formulario.elements.direccion;
     if (direccion) {
-        botonEnviarInscripcion.disabled = true;
-        if (estado) estado.textContent = 'Verificando la dirección...';
-
-        try {
-            const direccionValida = await esDireccionValida(direccion.value);
-            if (!estaInscripcionAbierta(periodoInscripcion)) {
-                let motivo = null;
-                if (periodoInscripcion.apertura && Date.now() < periodoInscripcion.apertura.getTime()) {
-                    motivo = `El período de inscripción abrirá el ${textoAperturaInscripciones}.`;
-                } else {
-                    motivo = `El período de inscripción cerró el ${textoCierreInscripciones}.`;
-                }
-                cerrarInscripciones(motivo);
-                return;
-            }
-            if (!direccionValida) {
-                direccion.setCustomValidity('Ingresá una dirección que se pueda encontrar.');
-                if (estado) {
-                    estado.textContent = 'No se encontró la dirección. Revisá la calle y la altura.';
-                    estado.className = 'form-status error';
-                }
-                formulario.reportValidity();
-                return;
-            }
-        } catch (error) {
-            console.error('No se pudo verificar la dirección:', error);
-            direccion.setCustomValidity('No se pudo verificar la dirección. Revisá tu conexión e intentá nuevamente.');
+        if (!esDireccionValida(direccion.value)) {
+            direccion.setCustomValidity('Ingresá una dirección válida (calle y número).');
             if (estado) {
-                estado.textContent = 'No se pudo verificar la dirección. Revisá tu conexión e intentá nuevamente.';
+                estado.textContent = 'Revisá la dirección: debe incluir el nombre de la calle y el número.';
                 estado.className = 'form-status error';
             }
             formulario.reportValidity();
             return;
-        } finally {
-            if (estaInscripcionAbierta(periodoInscripcion)) {
-                botonEnviarInscripcion.disabled = false;
-            }
         }
     }
 
