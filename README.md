@@ -41,6 +41,7 @@ Modelo Conceptual: Desarrollar el diagrama de dominio para los datos involucrado
 #### Inscripción de postulantes
 
 - Al completar correctamente el formulario, la inscripción se guarda en el `localStorage` del navegador bajo la clave `postulantes`. Los datos quedan en ese navegador y computadora; no se envían a un servidor ni se comparten automáticamente con otros postulantes.
+- El período se determina con la fecha y horario de la primera charla (apertura) y de la última charla (cierre): el formulario solo acepta inscripciones desde la apertura y hasta antes del cierre. Si la página queda abierta, habilita o cierra el formulario al alcanzar esos límites.
 - El botón **"Descargar postulantes.json"** exporta todas las inscripciones guardadas. Si necesitás incorporar el archivo al proyecto, movelo manualmente a la carpeta `data/`.
 - Por seguridad, una página web no puede escribir directamente dentro de `data/postulantes.json`. El archivo descargado es una copia de los registros almacenados en ese navegador. Si se borran los datos del navegador, se pierde esa copia local; descargá el JSON para conservarla.
 
@@ -94,6 +95,5 @@ porque el navegador puede bloquear la carga de archivos JSON y de las secciones 
 > usa la opción de Node.js.
 
 ---
-
 
 

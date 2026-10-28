@@ -41,6 +41,7 @@ function obtenerPeriodoInscripcion(charlas) {
 function estaInscripcionAbierta(periodo) {
     if (!periodo || !(periodo.apertura instanceof Date) || !(periodo.cierre instanceof Date)) return false;
     if (Number.isNaN(periodo.apertura.getTime()) || Number.isNaN(periodo.cierre.getTime())) return false;
+    if (periodo.apertura.getTime() >= periodo.cierre.getTime()) return false;
 
     const ahora = Date.now();
     return ahora >= periodo.apertura.getTime() && ahora < periodo.cierre.getTime();

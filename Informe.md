@@ -29,7 +29,7 @@ en el `localStorage` del navegador. El formulario permite descargar los registro
 | Consultar información de charlas | Implementado | `main.html` muestra tres charlas y `charlas.html` permite consultar el listado completo. |
 | Mostrar mapa | Implementado | El mapa muestra las sedes; desde cada charla del listado completo, el botón **“Ver sede en el mapa”** centra el mapa en su ubicación y abre el marcador. |
 | Modificar información de charla | No implementado | No hay una pantalla para editar charlas. Los datos solo se cambian modificando manualmente el archivo JSON. |
-| Registrarse como postulante | Implementado | El formulario valida y guarda la postulación en el `localStorage` del navegador. Se pueden exportar los registros como `postulantes.json`; el archivo debe moverse manualmente a `data/` si se quiere incluir en el proyecto. |
+| Registrarse como postulante | Implementado | El formulario habilita la inscripción desde la primera charla hasta antes del cierre de la última, y valida y guarda la postulación en el `localStorage` del navegador. Se pueden exportar los registros como `postulantes.json`; el archivo debe moverse manualmente a `data/` si se quiere incluir en el proyecto. |
 
 ## 3. Servicios externos utilizados
 

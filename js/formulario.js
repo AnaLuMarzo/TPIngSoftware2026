@@ -77,8 +77,10 @@ function actualizarEstadoInscripcion() {
 
     if (!estaInscripcionAbierta(periodoInscripcion)) {
         let motivo = null;
-        if (periodoInscripcion.apertura && Date.now() < periodoInscripcion.apertura.getTime()) {
+        const tiempoHastaApertura = periodoInscripcion.apertura.getTime() - Date.now();
+        if (tiempoHastaApertura > 0) {
             motivo = `El período de inscripción abrirá el ${textoAperturaInscripciones}.`;
+            window.setTimeout(actualizarEstadoInscripcion, Math.min(tiempoHastaApertura, 60_000));
         } else {
             motivo = `El período de inscripción cerró el ${textoCierreInscripciones}.`;
         }
@@ -86,20 +88,25 @@ function actualizarEstadoInscripcion() {
         return;
     }
 
+    formulario.querySelectorAll('input, select, button[type="submit"]').forEach(control => {
+        control.disabled = false;
+    });
     const tiempoRestante = periodoInscripcion.cierre.getTime() - Date.now();
-    if (botonEnviarInscripcion) botonEnviarInscripcion.disabled = false;
     window.setTimeout(actualizarEstadoInscripcion, Math.min(tiempoRestante, 60_000));
 }
 
 async function cargarPeriodoInscripcion() {
-    const avisoCierre = document.getElementById('fecha-cierre-inscripcion');
+    const avisoCierre = document.getElementById('fecha-periodo-inscripcion');
 
     try {
         const charlas = await obtenerCharlas();
         if (!Array.isArray(charlas)) throw new Error('La lista de charlas no es válida.');
 
         periodoInscripcion = obtenerPeriodoInscripcion(charlas);
-        if (!periodoInscripcion.apertura || !periodoInscripcion.cierre) throw new Error('No hay charlas con fecha y horario válidos.');
+        if (!periodoInscripcion.apertura || !periodoInscripcion.cierre ||
+            periodoInscripcion.apertura.getTime() >= periodoInscripcion.cierre.getTime()) {
+            throw new Error('No hay un período de inscripción válido definido por la primera y la última charla.');
+        }
 
         const fechaApertura = periodoInscripcion.apertura.toLocaleDateString('es-AR', {
             weekday: 'long',
@@ -147,7 +154,7 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     const estado = document.getElementById('estado-inscripcion');
 
-    if (!periodoInscripcion.cierre) {
+    if (!periodoInscripcion.apertura || !periodoInscripcion.cierre) {
         if (estado) {
             estado.textContent = 'No se pudo verificar el período de inscripción. Intentá nuevamente más tarde.';
             estado.className = 'form-status error';
@@ -156,7 +163,7 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
     }
     if (!estaInscripcionAbierta(periodoInscripcion)) {
         let motivo = null;
-        if (periodoInscripcion.apertura && Date.now() < periodoInscripcion.apertura.getTime()) {
+        if (periodoInscripcion.apertura.getTime() > Date.now()) {
             motivo = `El período de inscripción abrirá el ${textoAperturaInscripciones}.`;
         } else {
             motivo = `El período de inscripción cerró el ${textoCierreInscripciones}.`;
