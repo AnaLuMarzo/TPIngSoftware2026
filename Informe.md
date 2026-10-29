@@ -29,7 +29,7 @@ en el `localStorage` del navegador. El formulario permite descargar los registro
 | Consultar información de charlas | Implementado | `main.html` muestra tres charlas y `charlas.html` permite consultar el listado completo. |
 | Mostrar mapa | Implementado | El mapa muestra las sedes; desde cada charla del listado completo, el botón **“Ver sede en el mapa”** centra el mapa en su ubicación y abre el marcador. |
 | Modificar información de charla | No implementado | No hay una pantalla para editar charlas. Los datos solo se cambian modificando manualmente el archivo JSON. |
-| Registrarse como postulante | Implementado | El formulario habilita la inscripción desde la primera charla hasta antes del cierre de la última, y valida y guarda la postulación en el `localStorage` del navegador. Se pueden exportar los registros como `postulantes.json`; el archivo debe moverse manualmente a `data/` si se quiere incluir en el proyecto. |
+| Registrarse como postulante | Implementado | El formulario habilita la inscripción desde la primera charla hasta antes del cierre de la última, y valida y guarda la postulación en el `localStorage` del navegador. Las inscripciones pueden consultarse desde `admin.html`, donde se puede buscar por nombre o DNI y ver los datos completos. |
 
 ## 3. Servicios externos utilizados
 
@@ -189,9 +189,11 @@ Durante la verificación se comprobó que la página principal muestra tres char
 |---------|-----|
 | `main.html` | Página de inicio. Muestra la presentación y las primeras tres charlas; también contiene los espacios donde se cargan el formulario y el mapa. |
 | `charlas.html` | Página con el listado completo de charlas y un enlace para ver cada sede en el mapa. |
+| `admin.html` | Panel de administración. Permite consultar todas las inscripciones guardadas, buscar por nombre o DNI y ver los datos completos de cada postulante. |
 | `formulario.html` | Contenido visual del formulario de inscripción. |
 | `mapa.html` | Contenido visual de la sección del mapa y su buscador. |
 | `js/main.js` | Carga el formulario y el mapa dentro de la página de inicio. |
+| `js/admin.js` | Lógica del panel de administración: muestra la tabla de inscripciones, buscador por nombre/DNI y modal con detalles. |
 | `js/datos.js` | Lee los archivos JSON de charlas y sedes para que los usen las distintas partes del sitio. |
 | `js/charlas.js` | Lee los archivos de datos y arma las tarjetas con la información de cada charla. |
 | `js/formulario.js` | Muestra la fecha de cierre, revisa los campos y solicita validar la dirección antes de aceptar el formulario. |

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Inscripciones</title>
+    <link rel="stylesheet" href="css/styles.css?v=2">
+</head>
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo">⚖️ Autoridades de Mesa — Admin</div>
+            <nav>
+                <a href="main.html">Volver al portal</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1>Inscripciones registradas</h1>
+        <p>Listado de postulantes guardados en este navegador.</p>
+    </div>
+
+    <section id="admin-panel" style="max-width: 960px; margin: 2rem auto;">
+        <div style="margin-bottom: 1rem;">
+            <input type="text" id="buscador-admin" placeholder="Buscar por nombre o DNI…"
+                   style="padding: 0.5rem; width: 300px; font-size: 1rem;">
+            <span id="contador-resultados" style="margin-left: 1rem; color: #666;"></span>
+        </div>
+
+        <p id="mensaje-vacio-admin" style="color: #666; font-style: italic;">Cargando…</p>
+
+        <table id="tabla-admin" style="width: 100%; border-collapse: collapse; display: none;">
+            <thead>
+                <tr style="background: #f5f5f5; text-align: left;">
+                    <th style="padding: 0.5rem; border-bottom: 2px solid #ddd;">Nombre</th>
+                    <th style="padding: 0.5rem; border-bottom: 2px solid #ddd;">DNI</th>
+                    <th style="padding: 0.5rem; border-bottom: 2px solid #ddd;">Distrito</th>
+                    <th style="padding: 0.5rem; border-bottom: 2px solid #ddd;">Fecha inscripción</th>
+                    <th style="padding: 0.5rem; border-bottom: 2px solid #ddd;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla-admin"></tbody>
+        </table>
+    </section>
+
+    <!-- Modal para ver detalles -->
+    <div id="modal-detalles" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:#fff; padding:2rem; border-radius:8px; max-width:500px; width:90%; max-height:80vh; overflow-y:auto;">
+            <h3 style="margin-top:0;">Detalle del postulante</h3>
+            <div id="contenido-modal"></div>
+            <button onclick="cerrarModal()" class="btn" style="margin-top:1rem;">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="js/validaciones.js?v=3"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

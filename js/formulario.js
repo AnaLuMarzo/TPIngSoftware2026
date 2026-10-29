@@ -4,7 +4,6 @@ let periodoInscripcion = { apertura: null, cierre: null };
 let textoAperturaInscripciones = '';
 let textoCierreInscripciones = '';
 const botonEnviarInscripcion = formulario?.querySelector('button[type="submit"]');
-const botonDescargarPostulantes = document.getElementById('descargar-postulantes');
 
 function obtenerPostulantesGuardados() {
     const datosGuardados = localStorage.getItem(CLAVE_POSTULANTES);
@@ -17,46 +16,7 @@ function obtenerPostulantesGuardados() {
     return postulantes;
 }
 
-function descargarPostulantes() {
-    const estado = document.getElementById('estado-inscripcion');
-
-    try {
-        const postulantes = obtenerPostulantesGuardados();
-        if (postulantes.length === 0) {
-            if (estado) {
-                estado.textContent = 'Todavía no hay inscripciones guardadas para descargar.';
-                estado.className = 'form-status error';
-            }
-            return;
-        }
-
-        const archivo = new Blob([JSON.stringify(postulantes, null, 2)], {
-            type: 'application/json'
-        });
-        const url = URL.createObjectURL(archivo);
-        const enlace = document.createElement('a');
-        enlace.href = url;
-        enlace.download = 'postulantes.json';
-        document.body.append(enlace);
-        enlace.click();
-        enlace.remove();
-        window.setTimeout(() => URL.revokeObjectURL(url), 0);
-
-        if (estado) {
-            estado.textContent = 'Se descargó postulantes.json. Si necesitás incluirlo en el proyecto, guardalo en la carpeta data/.';
-            estado.className = 'form-status success';
-        }
-    } catch (error) {
-        console.error('No se pudieron descargar las inscripciones:', error);
-        if (estado) {
-            estado.textContent = 'No se pudieron descargar las inscripciones. Revisá que el almacenamiento del navegador esté disponible.';
-            estado.className = 'form-status error';
-        }
-    }
-}
-
 if (botonEnviarInscripcion) botonEnviarInscripcion.disabled = true;
-if (botonDescargarPostulantes) botonDescargarPostulantes.addEventListener('click', descargarPostulantes);
 
 function cerrarInscripciones(motivo) {
     if (!formulario) return;
@@ -253,4 +213,5 @@ if (formulario) formulario.addEventListener('submit', async (evento) => {
         estado.className = 'form-status success';
     }
     formulario.reset();
+    mostrarPostulantes();
 });
