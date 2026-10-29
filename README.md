@@ -67,6 +67,8 @@ El código se entrega en un archivo `.zip`. Seguir estos pasos:
    ```
 5. Abrir `http://localhost:8080/main.html` en el navegador. No abrir el archivo con doble clic, porque el navegador podría bloquear la lectura de los JSON.
 
+Para ver las inscripciones registradas, abrir `http://localhost:8080/admin.html` en el mismo navegador donde se completaron los formularios.
+
 Si no tiene Python instalado, puede usar cualquiera de estas alternativas desde la carpeta del proyecto ya descomprimida:
 
 #### Opción A: Visual Studio Code y Live Server
