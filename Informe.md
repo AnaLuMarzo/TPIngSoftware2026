@@ -22,7 +22,8 @@ Para abrir el prototipo se necesita un navegador actualizado, conexión a intern
 El usuario entra a la página de inicio y puede consultar las charlas destacadas o abrir el listado
 completo. Desde cada charla puede ir al mapa y ver la sede correspondiente. También puede completar
 el formulario de inscripción, que valida los datos, comprueba la dirección y guarda cada postulación
-en el `localStorage` del navegador. El formulario permite descargar los registros como `postulantes.json`.
+en el `localStorage` del navegador. Los datos ingresados por los postulantes podrán ser vistos por el
+administrador en una página aparte, no accesible para los postulantes.
 
 | Caso de uso | Estado | Flujo actual |
 |-------------|--------|--------------|
